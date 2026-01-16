@@ -1,0 +1,11 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - index.qmd
+website:
+  title: "Australian Rainfall Dynamics"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Report
