@@ -47,9 +47,9 @@ To achieve a robust analysis, this report addresses the following key objectives
 
 -   **Physical Modeling:** Reconstruct the drivers of rainfall by layering **Moisture**, **Energy**, **Wind Vectors**, and **Spatial Heterogeneity** into the model.
 
--   **Model Selection:** Rigorously compare standard linear models against the Zero-Inflated Gamma framework using AIC, BIC, and DHARMa residual diagnostics. \# **Computational Environment and Data Ingestion**
+-   **Model Selection:** Rigorously compare standard linear models against the Zero-Inflated Gamma framework using AIC, BIC, and DHARMa residual diagnostics. 
 
-# Setup & Data Loading
+# Computational Environment and Data Ingestion
 
 We begin by loading the necessary R libraries and reading the dataset.
 
@@ -119,20 +119,8 @@ Finally, the primary dataset is ingested into the environment as `df` for immedi
 #| label: global-setup
 #| include: false
 
-m0_null <- readRDS("models/m0_null.rds") # Baseline
-m1_moisture <- readRDS("models/m1_moisture.rds") # + Humidity/Pressure
-m2_temporal <- readRDS("models/m2_temporal.rds") # + Seasonality/Markov
-m3_history <- readRDS("models/m3_history.rds") # + Moving Averages
-m4_energy <- readRDS("models/m4_energy.rds") # + Sun/Evap/Interactions
-m5_wind <- readRDS("models/m5_wind.rds") # + Wind Vectors
-
-m6_mixed <- readRDS("models/m6_mixed.rds") # + Random Effects (Best Model)
-
-m_linear <- readRDS("models/m_linear.rds") # Gaussian (Fails)
-m_tweedie <- readRDS("models/m_tweedie.rds") # Tweedie (Good, but not best)
-
-check_data <- readRDS("data/prediction_check_data.rds") # For Distribution plots
-ppc_data <- readRDS("data/ppc_data.rds") # For Posterior Checks
+# Load everything at once
+load("models/all_models_bundle.RData")
 ```
 
 ```{r}
@@ -2785,7 +2773,8 @@ To visualize the spatial heterogeneity captured by Model 6, we extracted the con
 #| fig-height: 5
 #| message: false
 #| warning: false
-
+#| cache: true
+#| dependson: "global-setup"
 # Simulate Residuals
 res <- simulateResiduals(m6_mixed)
 
@@ -3137,7 +3126,7 @@ lrt_results <- tibble(
     lrt_5v4$Df[2],
     lrt_6v5$Df[2]
   ),
-  p_value = c(
+  raw_p = c(
     lrt_1v0$`Pr(>Chisq)`[2],
     lrt_2v1$`Pr(>Chisq)`[2],
     lrt_3v2$`Pr(>Chisq)`[2],
@@ -3147,7 +3136,10 @@ lrt_results <- tibble(
   )
 ) %>%
   mutate(
-    Significant = ifelse(p_value < 0.001, "***", "ns"),
+    adj_p_value = p.adjust(raw_p, method = "holm"),
+    Significant = ifelse(adj_p_value < 0.001, "***", 
+                        ifelse(adj_p_value < 0.01, "**",
+                              ifelse(adj_p_value < 0.05, "*", "ns"))),
     AIC_improvement = c(
       AIC(m0_null) - AIC(m1_moisture),
       AIC(m1_moisture) - AIC(m2_temporal),
@@ -3169,7 +3161,7 @@ lrt_results %>%
 
 ```{r}
 #| label: tbl-model-selection
-#| tbl-cap: "Comprehensive Model Selection Table"
+#| tbl-cap: "Model Selection Table"
 #| echo: true
 
 model_selection <- tibble(
@@ -3209,7 +3201,7 @@ model_selection <- tibble(
 
 model_selection %>%
   mutate(across(where(is.numeric), ~ round(., 2))) %>%
-  kable(caption = "Comprehensive Model Selection Table") %>%
+  kable(caption = "Model Selection Table") %>%
   kable_styling(bootstrap_options = "striped", full_width = FALSE)
 
 ```
