@@ -1,6 +1,10 @@
 # Predicting the Unpredictable: Australian Rainfall Dynamics
 
-This repository contains a full statistical analysis of daily rainfall across Australia using zero-inflated gamma mixed models. The work blends exploratory data analysis, feature engineering, and model diagnostics to explain both rainfall occurrence and intensity across 49 locations.
+This repository contains a full statistical analysis of daily rainfall across Australia using zero-inflated gamma mixed models. The work blends exploratory data analysis, feature engineering, and model diagnostics to explain both rainfall occurrence and intensity across 49 locations and more than 142,000 daily observations.
+
+## Statistical Challenge
+
+Australian rainfall is highly intermittent and non Gaussian. The dataset includes roughly 64 percent dry days, strong right skew, and heavy tail events where daily rainfall exceeds 100 mm. These characteristics motivate a two part model that separates the probability of rain from the magnitude of rain.
 
 ## Project Goals
 
@@ -32,12 +36,14 @@ This repository contains a full statistical analysis of daily rainfall across Au
 
 ## Data Overview
 
-The primary dataset is `data/weatherAUS.csv`, which includes daily observations from 49 Australian locations. The analysis covers more than 140,000 observations and includes variables such as humidity, pressure, wind direction, cloud cover, and temperature. Key engineered features include:
+The primary dataset is `data/weatherAUS.csv`, which includes daily observations from 49 Australian locations. The analysis covers more than 142,000 observations and includes variables such as humidity, pressure, wind direction, cloud cover, and temperature. Key engineered features include:
 
 - **Cyclical seasonality** using sine and cosine transforms for day of year.
 - **Wind vector decomposition** to convert wind direction into North-South and East-West components.
 - **Rain persistence features** such as wet or dry day streaks and lagged rainfall.
 - **Interaction terms** that capture the combined effect of sunshine and humidity.
+
+Missingness is most pronounced in sunshine and evaporation, which motivates Random Forest based imputation with predictive mean matching to preserve distributional structure.
 
 ## Modeling Approach
 
@@ -51,9 +57,46 @@ The final model includes fixed effects for meteorological drivers and random eff
 ## Key Findings Summary
 
 - Rainfall probability is strongly tied to humidity and prior day rain state.
-- The joint effect of humidity and sunshine creates a nonlinear threshold for rain onset.
-- Wind direction and pressure gradients influence rainfall intensity.
-- Location-level random effects capture meaningful geographic structure.
+- The joint effect of humidity and sunshine creates a nonlinear threshold for rain onset, described as the Rain Corner effect.
+- Wind direction and pressure gradients influence rainfall intensity, especially for southerly and westerly flows.
+- Location-level random effects capture meaningful geographic structure, roughly 10 percent of total variance.
+
+## Exploratory Insights
+
+- Seasonal intensity peaks in winter months with June and July showing the highest share of rainfall days.
+- Markov chain analysis shows dry persistence around 85 percent and wet persistence around 47 percent.
+- Humidity and cloud cover correlate positively with rainfall, while sunshine and evaporation are negative drivers.
+
+## Model Progression
+
+| Model | Focus | AIC | Delta AIC |
+| --- | --- | --- | --- |
+| M0 | Null baseline | 461,670 | - |
+| M1 | Moisture and pressure | 422,847 | -38,823 |
+| M2 | Temporal persistence | 406,659 | -16,188 |
+| M3 | Historical trends | 404,936 | -1,723 |
+| M4 | Energy and interactions | 403,052 | -1,884 |
+| M5 | Wind vectors | 402,453 | -599 |
+| M6 | Mixed effects | 394,854 | -7,599 |
+
+## Performance Metrics
+
+- **AUC**: 0.83 for wet and dry discrimination.
+- **MAE**: 2.71 mm for rainfall magnitude.
+- **RMSE**: 7.48 mm, reflecting heavy tail events.
+- **R2 marginal**: 0.345 for fixed effects.
+- **R2 conditional**: 0.441 with location effects.
+
+## Suitable Use Cases
+
+- Short range probabilistic forecasting.
+- Agricultural planning and irrigation scheduling.
+- Historical data imputation for non extreme events.
+
+## Not Suitable For
+
+- Extreme value prediction such as 100 year flood estimation.
+- Engineering design loads or catastrophic event forecasting.
 
 ## Reproducing the Analysis
 
