@@ -11,11 +11,11 @@ This repository contains a full statistical analysis of daily rainfall across Au
 
 ## What Is Included
 
-- **Quarto analysis**: `index.qmd` holds the full narrative, code, and figures.
-- **Data sources**: Raw data and supplemental examples live in `data/`.
-- **Pretrained models**: Fitted models are stored in `models/` as RDS objects.
-- **Rendered site**: The static HTML output is in `docs/` and can be hosted as a site.
-- **Notebooks**: `ausweather.ipynb` and `refactored.ipynb` capture exploratory and refactored workflows.
+- **Quarto analysis**: `index.qmd` contains the full narrative, code, and figures.
+- **Data sources**: `data/` contains raw data and supplemental examples.
+- **Pretrained models**: `models/` contains fitted model objects in RDS format.
+- **Rendered site**: `docs/` contains the static HTML output and can be hosted as a site.
+- **Notebooks**: `ausweather.ipynb` and `refactored.ipynb` contain exploratory and refactored workflows.
 
 ## Repository Layout
 
@@ -46,14 +46,14 @@ The analysis uses a zero-inflated gamma generalized linear mixed model, which se
 1. **Zero inflation model** for dry day probability.
 2. **Gamma intensity model** for rainfall amount conditional on rain.
 
-The final model includes fixed effects for meteorological drivers and random effects for location. Model selection uses AIC comparisons, likelihood ratio tests, and diagnostic checks with DHARMa.
+The final model includes fixed effects for meteorological drivers and random effects for location. Model selection uses AIC comparisons, likelihood ratio tests, and diagnostic checks using the DHARMa package.
 
 ## Key Findings Summary
 
 - Rainfall probability is strongly tied to humidity and prior day rain state.
 - The joint effect of humidity and sunshine creates a nonlinear threshold for rain onset.
 - Wind direction and pressure gradients influence rainfall intensity.
-- Location level random effects capture meaningful geographic structure.
+- Location-level random effects capture meaningful geographic structure.
 
 ## Reproducing the Analysis
 
