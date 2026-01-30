@@ -95,7 +95,7 @@ The final model includes fixed effects for meteorological drivers and random eff
 
 ## Not Suitable For
 
-- Extreme value prediction such as 100 year flood estimation.
+- Extreme value prediction such as 100-year flood estimation.
 - Engineering design loads or catastrophic event forecasting.
 
 ## Reproducing the Analysis
