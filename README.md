@@ -76,15 +76,36 @@ The final model (M6) was validated using simulation-based residuals (**DHARMa**)
 
 ```text
 .
-├── index.qmd          # Master Quarto document (The "Thesis")
-├── _quarto.yml        # Site configuration
-├── data/              # Raw data (weatherAUS.csv) and imputed sets
-├── models/            # Serialized glmmTMB objects (.RData)
-├── docs/              # Rendered HTML report (GitHub Pages)
-├── ausweather.ipynb   # Initial exploratory notebook
-└── refactored.ipynb   # Refined computational workflow
+├── index.qmd                    # Master Quarto document (The "Thesis")
+├── _quarto.yml                  # Site configuration
+├── diagnose_missingness.R       # Missing data diagnostics & sensitivity analysis
+├── MISSINGNESS_DIAGNOSTICS.md   # Documentation for diagnostic tool
+├── data/                        # Raw data (weatherAUS.csv) and imputed sets
+├── models/                      # Serialized glmmTMB objects (.RData)
+├── docs/                        # Rendered HTML report (GitHub Pages)
+├── ausweather.ipynb             # Initial exploratory notebook
+└── refactored.ipynb             # Refined computational workflow
 
 ```
+
+---
+
+## 🔍 **Missing Data Diagnostics**
+
+Before applying the Random Forest imputation strategy, we've implemented a comprehensive diagnostic tool to analyze the missingness mechanism. The `diagnose_missingness.R` script performs:
+
+* **Co-occurrence Analysis:** Identifies if instruments fail simultaneously (flags pairs >90% co-missing)
+* **Location-Based Stratification:** Detects station-specific systematic missingness patterns
+* **MAR/MNAR Testing:** Determines if data is Missing At Random through temporal and weather dependency tests
+* **Sensitivity Analysis:** Quantifies the cost of dropping vs. imputing high-missingness variables
+
+### Running the Diagnostics
+
+```bash
+Rscript diagnose_missingness.R
+```
+
+The script generates a detailed report with an evidence-based recommendation on whether to **impute** or **drop** problematic columns. See [MISSINGNESS_DIAGNOSTICS.md](MISSINGNESS_DIAGNOSTICS.md) for complete documentation.
 
 ---
 
