@@ -11,7 +11,9 @@
 suppressPackageStartupMessages({
   library(tidyverse)
   library(janitor)
-  library(kableExtra)
+  library(naniar)      # Modern missing data analysis
+  library(finalfit)    # Missing data patterns
+  library(corrr)       # Tidy correlation analysis
 })
 
 # Set output options
@@ -43,49 +45,30 @@ cat("===========================================================================
 cat("Goal: Determine if instruments fail simultaneously\n")
 cat("Threshold: Flag pairs where P(A missing | B missing) > 90%\n\n")
 
-# Identify columns with missing values
-cols_with_missing <- names(df)[colSums(is.na(df)) > 0]
+# Use naniar to identify columns with missing values
+cols_with_missing <- df %>%
+  miss_var_summary() %>%
+  filter(n_miss > 0) %>%
+  pull(variable)
 
-# Calculate co-occurrence probabilities
-co_occurrence_results <- list()
-
-for (i in 1:(length(cols_with_missing) - 1)) {
-  for (j in (i + 1):length(cols_with_missing)) {
-    var_a <- cols_with_missing[i]
-    var_b <- cols_with_missing[j]
-    
-    # Count observations where both are missing
-    both_missing <- sum(is.na(df[[var_a]]) & is.na(df[[var_b]]))
-    
-    # Count observations where var_b is missing
-    b_missing <- sum(is.na(df[[var_b]]))
-    
-    # Count observations where var_a is missing
-    a_missing <- sum(is.na(df[[var_a]]))
-    
-    # Calculate conditional probabilities
-    # P(A missing | B missing)
-    prob_a_given_b <- ifelse(b_missing > 0, both_missing / b_missing, 0)
-    
-    # P(B missing | A missing)
-    prob_b_given_a <- ifelse(a_missing > 0, both_missing / a_missing, 0)
-    
-    # Store results
-    co_occurrence_results[[length(co_occurrence_results) + 1]] <- data.frame(
-      Variable_A = var_a,
-      Variable_B = var_b,
-      Both_Missing = both_missing,
-      A_Missing_Total = a_missing,
-      B_Missing_Total = b_missing,
-      P_A_Given_B = prob_a_given_b,
-      P_B_Given_A = prob_b_given_a,
-      Max_Conditional_Prob = max(prob_a_given_b, prob_b_given_a)
-    )
-  }
-}
-
-# Combine results
-co_occurrence_df <- bind_rows(co_occurrence_results) %>%
+# Calculate co-occurrence probabilities using tidyverse approach
+# Create all variable pairs
+co_occurrence_df <- expand_grid(
+  Variable_A = cols_with_missing,
+  Variable_B = cols_with_missing
+) %>%
+  filter(Variable_A < Variable_B) %>%  # Only unique pairs
+  rowwise() %>%
+  mutate(
+    # Use naniar functions for missing data operations
+    Both_Missing = sum(is.na(df[[Variable_A]]) & is.na(df[[Variable_B]])),
+    A_Missing_Total = sum(is.na(df[[Variable_A]])),
+    B_Missing_Total = sum(is.na(df[[Variable_B]])),
+    P_A_Given_B = if_else(B_Missing_Total > 0, Both_Missing / B_Missing_Total, 0),
+    P_B_Given_A = if_else(A_Missing_Total > 0, Both_Missing / A_Missing_Total, 0),
+    Max_Conditional_Prob = max(P_A_Given_B, P_B_Given_A)
+  ) %>%
+  ungroup() %>%
   arrange(desc(Max_Conditional_Prob))
 
 # Display top co-occurring pairs
@@ -125,41 +108,40 @@ cat("===========================================================================
 cat("Goal: Identify if missingness is systematic to specific stations\n")
 cat("Threshold: If Range > 50%, imputation must be location-aware\n\n")
 
-# Calculate missingness rate by location for key variables
+# Calculate missingness rate by location for key variables using naniar
 key_vars <- c("sunshine", "evaporation", "cloud9am", "cloud3pm")
 
+# Use naniar's miss_var_summary with grouping for cleaner approach
 location_missingness <- df %>%
   group_by(location) %>%
-  summarise(
-    n_obs = n(),
-    sunshine_missing_pct = mean(is.na(sunshine)) * 100,
-    evaporation_missing_pct = mean(is.na(evaporation)) * 100,
-    cloud9am_missing_pct = mean(is.na(cloud9am)) * 100,
-    cloud3pm_missing_pct = mean(is.na(cloud3pm)) * 100
-  ) %>%
-  arrange(desc(sunshine_missing_pct))
+  miss_var_summary() %>%
+  filter(variable %in% key_vars) %>%
+  mutate(missing_pct = pct_miss) %>%
+  select(location, variable, missing_pct, n_miss) %>%
+  ungroup()
 
-# Calculate statistics across locations
-location_stats <- data.frame(
-  Variable = key_vars,
-  Min_Pct = sapply(key_vars, function(v) {
-    min(location_missingness[[paste0(v, "_missing_pct")]], na.rm = TRUE)
-  }),
-  Max_Pct = sapply(key_vars, function(v) {
-    max(location_missingness[[paste0(v, "_missing_pct")]], na.rm = TRUE)
-  }),
-  Mean_Pct = sapply(key_vars, function(v) {
-    mean(location_missingness[[paste0(v, "_missing_pct")]], na.rm = TRUE)
-  }),
-  SD_Pct = sapply(key_vars, function(v) {
-    sd(location_missingness[[paste0(v, "_missing_pct")]], na.rm = TRUE)
-  }),
-  Range_Pct = sapply(key_vars, function(v) {
-    max(location_missingness[[paste0(v, "_missing_pct")]], na.rm = TRUE) -
-    min(location_missingness[[paste0(v, "_missing_pct")]], na.rm = TRUE)
-  })
-) %>%
-  mutate(across(where(is.numeric), ~round(., 1)))
+# Pivot to wide format for easier viewing
+location_wide <- location_missingness %>%
+  pivot_wider(
+    names_from = variable,
+    values_from = missing_pct,
+    names_prefix = ""
+  ) %>%
+  mutate(n_obs = nrow(df) / n_distinct(df$location))  # Approximate per location
+
+# Calculate statistics across locations using tidyverse
+location_stats <- location_missingness %>%
+  group_by(variable) %>%
+  summarise(
+    Min_Pct = min(missing_pct, na.rm = TRUE),
+    Max_Pct = max(missing_pct, na.rm = TRUE),
+    Mean_Pct = mean(missing_pct, na.rm = TRUE),
+    SD_Pct = sd(missing_pct, na.rm = TRUE),
+    Range_Pct = Max_Pct - Min_Pct,
+    .groups = "drop"
+  ) %>%
+  mutate(across(where(is.numeric), ~round(., 1))) %>%
+  rename(Variable = variable)
 
 cat("Location-Level Missingness Statistics:\n")
 cat("--------------------------------------\n")
@@ -181,16 +163,20 @@ if (nrow(high_variance_vars) > 0) {
 }
 
 # Show top and bottom locations for sunshine (most problematic variable)
+sunshine_by_location <- location_missingness %>%
+  filter(variable == "sunshine") %>%
+  arrange(desc(missing_pct))
+
 cat("Top 5 Locations with Highest Sunshine Missingness:\n")
-print(location_missingness %>%
-  select(location, n_obs, sunshine_missing_pct) %>%
+print(sunshine_by_location %>%
+  select(location, missing_pct, n_miss) %>%
   head(5),
   row.names = FALSE)
 
 cat("\nTop 5 Locations with Lowest Sunshine Missingness:\n")
-print(location_missingness %>%
-  select(location, n_obs, sunshine_missing_pct) %>%
-  arrange(sunshine_missing_pct) %>%
+print(sunshine_by_location %>%
+  select(location, missing_pct, n_miss) %>%
+  arrange(missing_pct) %>%
   head(5),
   row.names = FALSE)
 cat("\n")
@@ -204,41 +190,61 @@ cat("REQUIREMENT 3: TEMPORAL & WEATHER DEPENDENCY (MAR TESTING)\n")
 cat("================================================================================\n")
 cat("Goal: Test if data is Missing At Random (MAR) or Missing Not At Random (MNAR)\n\n")
 
-# Add year column
+# Add year column and missing indicators
 df <- df %>%
-  mutate(year = lubridate::year(date))
+  mutate(year = lubridate::year(date)) %>%
+  add_shadow(key_vars)  # naniar function to create missing indicators
 
 # 4.1: Temporal Drift Analysis
 cat("3.1: TEMPORAL DRIFT ANALYSIS\n")
 cat("-----------------------------\n")
 
+# Use naniar for temporal missingness aggregation
 temporal_missingness <- df %>%
   group_by(year) %>%
-  summarise(
-    sunshine_missing_pct = mean(is.na(sunshine)) * 100,
-    evaporation_missing_pct = mean(is.na(evaporation)) * 100,
-    cloud9am_missing_pct = mean(is.na(cloud9am)) * 100,
-    cloud3pm_missing_pct = mean(is.na(cloud3pm)) * 100,
-    n_obs = n()
-  )
+  miss_var_summary() %>%
+  filter(variable %in% key_vars) %>%
+  select(year, variable, pct_miss, n_miss) %>%
+  pivot_wider(
+    names_from = variable,
+    values_from = pct_miss,
+    id_cols = year
+  ) %>%
+  ungroup()
 
 cat("Missingness Rate by Year:\n")
 print(temporal_missingness %>%
-  mutate(across(where(is.numeric) & !n_obs, ~round(., 1))),
+  mutate(across(where(is.numeric) & !year, ~round(., 1))),
   row.names = FALSE)
 cat("\n")
 
-# Correlation with year
+# Correlation with year using corrr for tidy correlation
 for (var in key_vars) {
-  missing_indicator <- as.numeric(is.na(df[[var]]))
-  cor_test <- cor.test(df$year, missing_indicator, method = "spearman")
+  shadow_var <- paste0(var, "_NA")
+  
+  # Use Spearman correlation for ordinal relationship
+  cor_result <- df %>%
+    select(year, all_of(shadow_var)) %>%
+    mutate(!!shadow_var := as.numeric(.data[[shadow_var]] == "NA")) %>%
+    correlate(method = "spearman", quiet = TRUE) %>%
+    focus(year) %>%
+    filter(term == shadow_var)
+  
+  cor_value <- cor_result$year
+  
+  # Compute p-value separately (corrr doesn't provide it)
+  cor_test <- cor.test(
+    df$year, 
+    as.numeric(df[[shadow_var]] == "NA"),
+    method = "spearman"
+  )
   
   cat(sprintf("Correlation between %s missingness and year:\n", var))
   cat(sprintf("  Spearman's rho = %.4f, p-value = %.4e\n", 
-              cor_test$estimate, cor_test$p.value))
+              cor_value, cor_test$p.value))
   
   if (cor_test$p.value < 0.05) {
-    if (abs(cor_test$estimate) > 0.1) {
+    if (abs(cor_value) > 0.1) {
       cat("  ⚠️  Significant temporal drift detected!\n")
     } else {
       cat("  ✓ Statistically significant but weak correlation.\n")
@@ -254,7 +260,7 @@ cat("3.2: WEATHER DEPENDENCY ANALYSIS\n")
 cat("--------------------------------\n")
 cat("Testing if missingness correlates with observed weather conditions.\n\n")
 
-# Create rainfall categories
+# Create rainfall categories using tidyverse
 df <- df %>%
   mutate(
     rainfall_category = case_when(
@@ -268,13 +274,12 @@ df <- df %>%
 # Chi-square test: Is sunshine missingness related to rainfall?
 cat("Chi-Square Test: Sunshine Missingness vs Rainfall Category\n")
 
-# Create contingency table
-sunshine_rainfall_table <- table(
-  Sunshine_Missing = is.na(df$sunshine),
-  Rainfall = df$rainfall_category
-)
+# Use tidyverse approach for contingency table and chi-square
+chi_data <- df %>%
+  select(sunshine, rainfall_category) %>%
+  mutate(sunshine_missing = is.na(sunshine))
 
-chi_test <- chisq.test(sunshine_rainfall_table)
+chi_test <- chisq.test(chi_data$sunshine_missing, chi_data$rainfall_category)
 cat(sprintf("  Chi-square = %.2f, df = %d, p-value = %.4e\n", 
             chi_test$statistic, chi_test$parameter, chi_test$p.value))
 
@@ -286,18 +291,22 @@ if (chi_test$p.value < 0.05) {
 }
 cat("\n")
 
-# Show missingness rates by rainfall category
+# Show missingness rates by rainfall category using naniar
 missingness_by_rainfall <- df %>%
   group_by(rainfall_category) %>%
-  summarise(
-    n = n(),
-    sunshine_missing_pct = mean(is.na(sunshine)) * 100,
-    evaporation_missing_pct = mean(is.na(evaporation)) * 100
+  miss_var_summary() %>%
+  filter(variable %in% c("sunshine", "evaporation")) %>%
+  select(rainfall_category, variable, pct_miss, n_miss) %>%
+  pivot_wider(
+    names_from = variable,
+    values_from = pct_miss
   ) %>%
-  mutate(across(where(is.numeric) & !n, ~round(., 1)))
+  ungroup()
 
 cat("Missingness Rates by Rainfall Category:\n")
-print(missingness_by_rainfall, row.names = FALSE)
+print(missingness_by_rainfall %>%
+  mutate(across(where(is.numeric), ~round(., 1))),
+  row.names = FALSE)
 cat("\n")
 
 ################################################################################
@@ -309,49 +318,40 @@ cat("REQUIREMENT 4: SENSITIVITY SCENARIOS\n")
 cat("================================================================================\n")
 cat("Goal: Quantify the cost of dropping data vs. imputing it\n\n")
 
-# Calculate overall missingness
+# Calculate overall missingness using naniar
 overall_missingness <- df %>%
-  summarise(across(everything(), ~mean(is.na(.)) * 100)) %>%
-  pivot_longer(everything(), names_to = "variable", values_to = "missing_pct")
+  miss_var_summary()
 
 # Scenario 1: Baseline - Keep all variables
 n_baseline <- nrow(df)
 n_vars_baseline <- ncol(df)
+n_complete_baseline <- df %>% n_complete()
 
 # Scenario 2: Conservative - Drop sunshine, evaporation, and cloud
 df_conservative <- df %>%
   select(-sunshine, -evaporation, -cloud9am, -cloud3pm)
-n_complete_conservative <- sum(complete.cases(df_conservative))
+n_complete_conservative <- df_conservative %>% n_complete()
 n_vars_conservative <- ncol(df_conservative)
 
 # Scenario 3: Strict - Drop any column with >10% missingness
 high_missing_cols <- overall_missingness %>%
-  filter(missing_pct > 10) %>%
+  filter(pct_miss > 10) %>%
   pull(variable)
 
 df_strict <- df %>%
   select(-any_of(high_missing_cols))
-n_complete_strict <- sum(complete.cases(df_strict))
+n_complete_strict <- df_strict %>% n_complete()
 n_vars_strict <- ncol(df_strict)
 
-# Create comparison table
-scenario_comparison <- data.frame(
-  Scenario = c("Baseline (Keep All)", 
-               "Conservative (Drop Sunshine/Evap/Cloud)",
-               "Strict (Drop >10% Missing)"),
-  Variables_Retained = c(n_vars_baseline, n_vars_conservative, n_vars_strict),
-  Total_Observations = c(n_baseline, n_baseline, n_baseline),
-  Complete_Cases = c(sum(complete.cases(df)), 
-                     n_complete_conservative, 
-                     n_complete_strict),
-  Data_Retention_Pct = round(c(
-    sum(complete.cases(df)) / n_baseline * 100,
-    n_complete_conservative / n_baseline * 100,
-    n_complete_strict / n_baseline * 100
-  ), 1),
-  Strategy = c("Requires imputation",
-               "Moderate imputation needed",
-               "Minimal imputation needed")
+# Create comparison table using tribble for clarity
+scenario_comparison <- tribble(
+  ~Scenario, ~Variables_Retained, ~Total_Observations, ~Complete_Cases, ~Data_Retention_Pct, ~Strategy,
+  "Baseline (Keep All)", n_vars_baseline, n_baseline, n_complete_baseline,
+    round(n_complete_baseline / n_baseline * 100, 1), "Requires imputation",
+  "Conservative (Drop Sunshine/Evap/Cloud)", n_vars_conservative, n_baseline, n_complete_conservative,
+    round(n_complete_conservative / n_baseline * 100, 1), "Moderate imputation needed",
+  "Strict (Drop >10% Missing)", n_vars_strict, n_baseline, n_complete_strict,
+    round(n_complete_strict / n_baseline * 100, 1), "Minimal imputation needed"
 )
 
 cat("Data Retention Comparison:\n")
@@ -379,11 +379,22 @@ cat("===========================================================================
 # Determine recommendation based on findings
 has_high_cooccurrence <- nrow(flagged_pairs) > 0
 has_location_variance <- nrow(high_variance_vars) > 0
+
+# Check temporal drift using the correlation results from earlier
 has_temporal_drift <- any(sapply(key_vars, function(var) {
-  cor_test <- suppressWarnings(cor.test(df$year, as.numeric(is.na(df[[var]])), 
-                                        method = "spearman"))
-  cor_test$p.value < 0.05 && abs(cor_test$estimate) > 0.1
+  shadow_var <- paste0(var, "_NA")
+  if (shadow_var %in% names(df)) {
+    cor_test <- suppressWarnings(cor.test(
+      df$year, 
+      as.numeric(df[[shadow_var]] == "NA"),
+      method = "spearman"
+    ))
+    cor_test$p.value < 0.05 && abs(cor_test$estimate) > 0.1
+  } else {
+    FALSE
+  }
 }))
+
 has_weather_dependency <- chi_test$p.value < 0.05
 
 cat("DECISION CRITERIA:\n")

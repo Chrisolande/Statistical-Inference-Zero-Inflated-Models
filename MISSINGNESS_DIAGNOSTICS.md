@@ -21,8 +21,15 @@ Blindly imputing nearly half the dataset without understanding the **mechanism o
 Ensure you have the following R packages installed:
 
 ```r
-install.packages(c("tidyverse", "janitor", "kableExtra"))
+install.packages(c("tidyverse", "janitor", "naniar", "finalfit", "corrr"))
 ```
+
+**Key Libraries Used:**
+- **`naniar`**: Modern tidyverse-compatible tools for missing data analysis
+- **`finalfit`**: Missing data pattern analysis
+- **`corrr`**: Tidy correlation analysis
+- **`tidyverse`**: Core data manipulation and visualization
+- **`janitor`**: Data cleaning utilities
 
 ### Running the Script
 
@@ -177,6 +184,32 @@ After running this diagnostic:
 
 ## Technical Details
 
+### Modern R Libraries Used
+
+This script leverages modern tidyverse-compatible packages for robust missing data analysis:
+
+**`naniar` Package:**
+- `miss_var_summary()`: Summarizes missing data by variable
+- `add_shadow()`: Creates shadow variables for tracking missingness
+- `n_complete()`: Counts complete cases efficiently
+- Provides tidy, pipeable functions for all missing data operations
+
+**`corrr` Package:**
+- `correlate()`: Computes correlations in tidy format
+- `focus()`: Extracts specific correlation values
+- Supports non-parametric methods (Spearman, Kendall)
+
+**`finalfit` Package:**
+- Missing data pattern visualization
+- Group-based missingness analysis
+- Integration with clinical/research workflows
+
+**Tidyverse Approach:**
+- Uses `expand_grid()` for generating all variable pairs
+- Employs `rowwise()` and vectorized operations instead of loops
+- Leverages `tribble()` for readable table construction
+- Consistent use of `%>%` piping for clarity
+
 ### Missingness Mechanisms
 
 - **MCAR (Missing Completely At Random):** Missingness unrelated to any variables
@@ -191,9 +224,15 @@ After running this diagnostic:
 
 ## References
 
+### Missing Data Theory
 - Little, R. J., & Rubin, D. B. (2019). *Statistical Analysis with Missing Data* (3rd ed.)
 - van Buuren, S. (2018). *Flexible Imputation of Missing Data* (2nd ed.)
 - Schafer, J. L., & Graham, J. W. (2002). Missing data: Our view of the state of the art. *Psychological Methods*, 7(2), 147-177.
+
+### R Packages
+- Tierney, N., & Cook, D. (2023). *naniar: Data Structures, Summaries, and Visualisations for Missing Data*. CRAN.
+- Harrison, E. (2023). *finalfit: Quickly Create Elegant Regression Results Tables and Plots*. CRAN.
+- Kuhn, M., et al. (2023). *corrr: Correlations in R*. CRAN.
 
 ## Author
 
