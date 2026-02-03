@@ -384,7 +384,9 @@ rainfall_stats %>%
   ) %>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = FALSE)
 
-# Zero-Inflation Check (Dry vs. Wet Days)
+# Structural Zeros Check (Dry vs. Wet Days)
+# Note: "Zero-inflation" here refers to the data characteristic (prevalence of zeros),
+# not the modeling approach. We use a hurdle model to handle this data structure.
 rain_check <- df_clean %>%
   summarise(
     total_days = n(),
@@ -2040,6 +2042,9 @@ Following the creation of derived features (interactions, indices, and vector de
 # Fit the Null Model (Intercept-Only)
 # Establish a baseline AIC/BIC and recover global average parameters
 # Using hurdle specification: binomial occurrence + truncated Gamma intensity
+# Note: truncated_gamma() implements a hurdle model where:
+#   - ziformula models the hurdle (probability of zero/occurrence)
+#   - The Gamma component is truncated at zero (cannot generate zeros)
 m0_null <- glmmTMB(
   formula = rainfall ~ 1, # Model rainfall intensity using only an intercept
   ziformula = ~1, # Model probability of dry days using only an intercept (hurdle component)
