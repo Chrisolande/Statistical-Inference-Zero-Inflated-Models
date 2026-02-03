@@ -126,8 +126,7 @@ location_wide <- location_missingness %>%
     names_from = variable,
     values_from = missing_pct,
     names_prefix = ""
-  ) %>%
-  mutate(n_obs = nrow(df) / n_distinct(df$location))  # Approximate per location
+  )
 
 # Calculate statistics across locations using tidyverse
 location_stats <- location_missingness %>%
@@ -190,10 +189,9 @@ cat("REQUIREMENT 3: TEMPORAL & WEATHER DEPENDENCY (MAR TESTING)\n")
 cat("================================================================================\n")
 cat("Goal: Test if data is Missing At Random (MAR) or Missing Not At Random (MNAR)\n\n")
 
-# Add year column and missing indicators
+# Add year column
 df <- df %>%
-  mutate(year = lubridate::year(date)) %>%
-  add_shadow(key_vars)  # naniar function to create missing indicators
+  mutate(year = lubridate::year(date))
 
 # 4.1: Temporal Drift Analysis
 cat("3.1: TEMPORAL DRIFT ANALYSIS\n")
@@ -218,30 +216,17 @@ print(temporal_missingness %>%
   row.names = FALSE)
 cat("\n")
 
-# Correlation with year using corrr for tidy correlation
+# Correlation with year using tidy approach
 for (var in key_vars) {
-  shadow_var <- paste0(var, "_NA")
+  # Create missing indicator (0 = present, 1 = missing)
+  missing_indicator <- as.numeric(is.na(df[[var]]))
   
   # Use Spearman correlation for ordinal relationship
-  cor_result <- df %>%
-    select(year, all_of(shadow_var)) %>%
-    mutate(!!shadow_var := as.numeric(.data[[shadow_var]] == "NA")) %>%
-    correlate(method = "spearman", quiet = TRUE) %>%
-    focus(year) %>%
-    filter(term == shadow_var)
-  
-  cor_value <- cor_result$year
-  
-  # Compute p-value separately (corrr doesn't provide it)
-  cor_test <- cor.test(
-    df$year, 
-    as.numeric(df[[shadow_var]] == "NA"),
-    method = "spearman"
-  )
+  cor_test <- cor.test(df$year, missing_indicator, method = "spearman")
   
   cat(sprintf("Correlation between %s missingness and year:\n", var))
   cat(sprintf("  Spearman's rho = %.4f, p-value = %.4e\n", 
-              cor_value, cor_test$p.value))
+              cor_test$estimate, cor_test$p.value))
   
   if (cor_test$p.value < 0.05) {
     if (abs(cor_value) > 0.1) {
@@ -346,12 +331,9 @@ n_vars_strict <- ncol(df_strict)
 # Create comparison table using tribble for clarity
 scenario_comparison <- tribble(
   ~Scenario, ~Variables_Retained, ~Total_Observations, ~Complete_Cases, ~Data_Retention_Pct, ~Strategy,
-  "Baseline (Keep All)", n_vars_baseline, n_baseline, n_complete_baseline,
-    round(n_complete_baseline / n_baseline * 100, 1), "Requires imputation",
-  "Conservative (Drop Sunshine/Evap/Cloud)", n_vars_conservative, n_baseline, n_complete_conservative,
-    round(n_complete_conservative / n_baseline * 100, 1), "Moderate imputation needed",
-  "Strict (Drop >10% Missing)", n_vars_strict, n_baseline, n_complete_strict,
-    round(n_complete_strict / n_baseline * 100, 1), "Minimal imputation needed"
+  "Baseline (Keep All)", n_vars_baseline, n_baseline, n_complete_baseline, round(n_complete_baseline / n_baseline * 100, 1), "Requires imputation",
+  "Conservative (Drop Sunshine/Evap/Cloud)", n_vars_conservative, n_baseline, n_complete_conservative, round(n_complete_conservative / n_baseline * 100, 1), "Moderate imputation needed",
+  "Strict (Drop >10% Missing)", n_vars_strict, n_baseline, n_complete_strict, round(n_complete_strict / n_baseline * 100, 1), "Minimal imputation needed"
 )
 
 cat("Data Retention Comparison:\n")
@@ -380,19 +362,15 @@ cat("===========================================================================
 has_high_cooccurrence <- nrow(flagged_pairs) > 0
 has_location_variance <- nrow(high_variance_vars) > 0
 
-# Check temporal drift using the correlation results from earlier
+# Check temporal drift using simple missing indicators
 has_temporal_drift <- any(sapply(key_vars, function(var) {
-  shadow_var <- paste0(var, "_NA")
-  if (shadow_var %in% names(df)) {
-    cor_test <- suppressWarnings(cor.test(
-      df$year, 
-      as.numeric(df[[shadow_var]] == "NA"),
-      method = "spearman"
-    ))
-    cor_test$p.value < 0.05 && abs(cor_test$estimate) > 0.1
-  } else {
-    FALSE
-  }
+  missing_indicator <- as.numeric(is.na(df[[var]]))
+  cor_test <- suppressWarnings(cor.test(
+    df$year, 
+    missing_indicator,
+    method = "spearman"
+  ))
+  cor_test$p.value < 0.05 && abs(cor_test$estimate) > 0.1
 }))
 
 has_weather_dependency <- chi_test$p.value < 0.05
