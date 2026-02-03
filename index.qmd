@@ -35,7 +35,12 @@ Standard statistical approaches often assume data follows a normal (Gaussian) di
 2.  **Extreme Skewness:** When it does rain, the distribution is highly right-skewed. The "long tail" of storm events drives the bulk of the variance.
 3.  **Spatiotemporal Dependence:** Rain is not independent. A wet day in Darwin does not behave like a wet day in Melbourne, and a wet yesterday strongly predicts a wet today.
 
-To address these challenges, we utilize a **Zero-Inflated Gamma (ZIG) Generalized Linear Mixed Model (GLMM)** framework. This allows us to model the *probability of rain* (Logistic component) and the *intensity of rain* (Gamma component) as distinct but related physical processes.
+To address these challenges, we utilize a **Hurdle Gamma Generalized Linear Mixed Model (GLMM)** framework. This approach explicitly separates the data-generating process into two distinct components:
+
+- **Occurrence (Hurdle)**: A logistic regression models whether rain occurs at all (zero vs. non-zero), treating dry days as a structural state rather than a random outcome from the intensity distribution.
+- **Intensity (Gamma)**: Conditional on rain occurring, a Gamma distribution with truncation at zero models the amount of rainfall. This ensures the intensity component never generates zeros or negative values, maintaining physical validity.
+
+Unlike zero-inflated models where the Gamma component can also produce zeros, the hurdle specification strictly enforces that zeros arise only from the binomial hurdle process, while all positive values come from the truncated Gamma. This aligns with the physical rainfall process and improves interpretability of coefficients.
 
 ### Objectives
 
@@ -47,7 +52,7 @@ To achieve a robust analysis, this report addresses the following key objectives
 
 -   **Physical Modeling:** Reconstruct the drivers of rainfall by layering **Moisture**, **Energy**, **Wind Vectors**, and **Spatial Heterogeneity** into the model.
 
--   **Model Selection:** Rigorously compare standard linear models against the Zero-Inflated Gamma framework using AIC, BIC, and DHARMa residual diagnostics. 
+-   **Model Selection:** Rigorously compare standard linear models against the Hurdle Gamma framework using AIC, BIC, and DHARMa residual diagnostics. 
 
 # Computational Environment and Data Ingestion
 
@@ -107,7 +112,7 @@ This section establishes the computational framework necessary for the analysis.
 The analytical toolkit assembled here is comprehensive:
 
 -   **Data Wrangling & Cleaning:** The `tidyverse` suite and `janitor` are employed for efficient data manipulation and cleaning.
--   **Advanced Statistical Modeling:** `glmmTMB` and `mgcv` are included to handle complex regression tasks, specifically zero-inflated models and Generalized Additive Models (GAMs), while `DHARMa` and `performance` are reserved for rigorous model diagnostics and residual analysis.
+-   **Advanced Statistical Modeling:** `glmmTMB` and `mgcv` are included to handle complex regression tasks, specifically hurdle models and Generalized Additive Models (GAMs), while `DHARMa` and `performance` are reserved for rigorous model diagnostics and residual analysis.
 -   **Imputation & Machine Learning:** `missRanger` and `ranger` provide the framework for the Random Forest-based imputation strategy mentioned in the objectives.
 -   **Visualization:** A combination of `patchwork`, `ggpubr`, and `ggridges` is loaded to generate publication-quality, multi-panel figures.
 
@@ -417,7 +422,7 @@ A deep statistical examination of the target variable, `rainfall`, confirms extr
 
 -   **Kurtosis (181.15):** This exceptionally high value points to a "leptokurtic" distribution, meaning extreme outliers are far more frequent than in a normal distribution. The maximum recorded rainfall of 371 mm, alongside 151 events exceeding 100 mm, confirms the presence of extreme weather events that models must be robust enough to handle.
 
-**Conclusion:** The combination of \~64% zeros and extreme kurtosis confirms that a standard Gaussian Linear Model (OLS) would be severely biased. These statistics strongly support the adoption of a **Hurdle Model** or **Zero-Inflated Gamma** framework to separately model the zero-state and the positive continuous state.
+**Conclusion:** The combination of \~64% zeros and extreme kurtosis confirms that a standard Gaussian Linear Model (OLS) would be severely biased. These statistics strongly support the adoption of a **Hurdle Gamma** framework to separately model the zero-state (occurrence) and the positive continuous state (intensity). Unlike zero-inflated models, the hurdle specification ensures that the Gamma component is strictly truncated at zero, preventing it from generating zeros and maintaining clear separation between the occurrence and intensity processes.
 
 ## Bivariate Correlation Analysis
 
@@ -2033,11 +2038,12 @@ Following the creation of derived features (interactions, indices, and vector de
 #| eval: false
 
 # Fit the Null Model (Intercept-Only)
-# TO Establish a baseline AIC/BIC and recover global average parameters
+# Establish a baseline AIC/BIC and recover global average parameters
+# Using hurdle specification: binomial occurrence + truncated Gamma intensity
 m0_null <- glmmTMB(
   formula = rainfall ~ 1, # Model rainfall intensity using only an intercept
-  ziformula = ~1, # Model probability of dry days using only an intercept
-  family = Gamma(link = "log"), # Gamma distribution for positive rain
+  ziformula = ~1, # Model probability of dry days using only an intercept (hurdle component)
+  family = truncated_gamma(link = "log"), # Truncated Gamma for positive rain (hurdle model)
   data = df_scaled
 )
 ```
@@ -2055,23 +2061,23 @@ tab_model(
   string.pred = "Parameter",
   string.est = "Estimate (Exp)",
   dv.labels = "Baseline Rainfall Model",
-  title = "Table 1: Baseline Zero-Inflated Gamma Model (Intercept Only)"
+  title = "Table 1: Baseline Hurdle Gamma Model (Intercept Only)"
 )
 ```
 
-To quantify the value added by our meteorological predictors, we first fitted a **"Null" Zero-Inflated Gamma model**. This model contains no predictors (covariates); it consists solely of intercepts. Its purpose is to verify if the model structure correctly recovers the fundamental properties of the dataset (the global probability of rain and the global average intensity).
+To quantify the value added by our meteorological predictors, we first fitted a **"Null" Hurdle Gamma model**. This model contains no predictors (covariates); it consists solely of intercepts. Its purpose is to verify if the model structure correctly recovers the fundamental properties of the dataset (the global probability of rain and the global average intensity).
 
-**1. Zero-Inflation Component (The "Hurdle"):** The zero-inflation intercept is $\beta_{zi} = 0.5769$. Since this component uses a **logit** link function, we can back-transform it to find the baseline probability of a dry day:
+**1. Hurdle Component (Occurrence):** The hurdle intercept is $\beta_{zi} = 0.5769$. Since this component uses a **logit** link function, we can back-transform it to find the baseline probability of a dry day:
 
 $$P(\text{Dry}) = \frac{e^{0.5769}}{1 + e^{0.5769}} \approx \frac{1.78}{2.78} \approx 64.03\%$$
 
-**Insight:** This model-derived probability matches the empirical zero-inflation rate ($64.05\%$) calculated in our EDA perfectly. This confirms the model is correctly calibrated to the frequency of dry days.
+**Insight:** This model-derived probability matches the empirical occurrence rate ($64.05\%$) calculated in our EDA perfectly. This confirms the model is correctly calibrated to the frequency of dry days. In the hurdle framework, this component represents a true binomial process for rain occurrence.
 
-**2. Conditional Component (Gamma Intensity):** The conditional intercept is $\beta_{cond} = 1.8825$. Using the **log** link function, we recover the baseline rainfall intensity for wet days:
+**2. Conditional Component (Truncated Gamma Intensity):** The conditional intercept is $\beta_{cond} = 1.8825$. Using the **log** link function, we recover the baseline rainfall intensity for wet days:
 
 $$\mu_{\text{rain}} = e^{1.8825} \approx 6.57 \text{ mm}$$
 
-**Insight:** This represents the typical "geometric mean" rainfall intensity when it does rain, unadjusted for season or location.
+**Insight:** This represents the typical "geometric mean" rainfall intensity when it does rain, unadjusted for season or location. Importantly, the truncated Gamma specification ensures this component never generates zeros—all zeros are strictly modeled by the hurdle component, maintaining clear separation between occurrence and intensity processes.
 
 **3. Performance Baseline:**
 
@@ -2128,11 +2134,11 @@ Building upon the baseline, "Model 1" incorporates the primary moisture and pres
 
 -   **Pressure Change:** The coefficient is positive ($\beta = 0.23$), suggesting that larger rapid fluctuations in pressure (instability) correlate with heavier rainfall.
 
-**3. Zero-Inflation Model (Probability of Dry Days):**
+**3. Hurdle Model (Probability of Dry Days):**
 
--   **Humidity:** The coefficient for `humidity3pm` is **-1.07**. In a zero-inflated model, a *negative* coefficient means the predictor *decreases* the log-odds of a zero (dry day). Therefore, **higher humidity significantly increases the probability of rain**.
+-   **Humidity:** The coefficient for `humidity3pm` is **-1.07**. In a hurdle model, a *negative* coefficient means the predictor *decreases* the log-odds of a zero (dry day). Therefore, **higher humidity significantly increases the probability of rain**.
 
--   **Non-Significance:** Interestingly, `dewpoint_9am` is not significant in the zero-inflation part ($p = 0.907$). This implies that while the *absolute* moisture (dewpoint) determines *how hard* it rains (intensity), it is the *relative* saturation (humidity) that determines *if* it rains at all.
+-   **Non-Significance:** Interestingly, `dewpoint_9am` is not significant in the hurdle part ($p = 0.907$). This implies that while the *absolute* moisture (dewpoint) determines *how hard* it rains (intensity, conditional on occurrence), it is the *relative* saturation (humidity) that determines *if* it rains at all. This clear separation is a strength of the hurdle specification.
 
 ## Temporal Dynamics and Persistence
 
@@ -2177,7 +2183,7 @@ m2_temporal %>%
   modify_caption("**Model 2: Temporal & Persistence Effects**")
 ```
 
-"Model 2" extends the analysis by incorporating the time-dependent structures identified in our EDA: **seasonality** (cyclical encoding) and **persistence** (Markov chains). We also refined the Zero-Inflation component to include dynamic drivers like `cloud_development` and `pressure_change`.
+"Model 2" extends the analysis by incorporating the time-dependent structures identified in our EDA: **seasonality** (cyclical encoding) and **persistence** (Markov chains). We also refined the Hurdle component to include dynamic drivers like `cloud_development` and `pressure_change`.
 
 **1. Performance Improvement:**
 
@@ -2191,11 +2197,11 @@ m2_temporal %>%
 
 -   **Robustness:** The coefficients for moisture (`humidity3pm`, `dewpoint`) remained stable compared to Model 1, indicating that seasonality is an independent driver of intensity, not just a proxy for changing humidity levels.
 
-**3. Zero-Inflation Model (Probability of Dry Days):**
+**3. Hurdle Model (Probability of Dry Days):**
 
--   **The "Persistence" Effect:** The strongest predictor in the zero-inflation model is `rain_yesterdayYes` with a coefficient of **-1.42**.
+-   **The "Persistence" Effect:** The strongest predictor in the hurdle model is `rain_yesterdayYes` with a coefficient of **-1.42**.
 
--   **Interpretation:** Because the Zero-Inflation model predicts the probability of a *zero* (dry day), a negative coefficient means *lower odds of being dry*.
+-   **Interpretation:** Because the Hurdle model predicts the probability of a *zero* (dry day), a negative coefficient means *lower odds of being dry*.
 
 -   **Odds Ratio:** $\exp(-1.42) \approx 0.24$. This implies that if it rained yesterday, the odds of today being dry drop by \~76%. This is a massive effect size that validates the Markov Chain findings before.
 
@@ -2203,7 +2209,7 @@ m2_temporal %>%
 
 -   `pressure_change` ($\beta = -0.51$): Large pressure drops significantly decrease the probability of a dry day (i.e., increase rain probability).
 
--   `cloud_development` ($\beta = 0.11$): Surprisingly, positive cloud development (more clouds at 3pm than 9am) has a positive coefficient here, slightly *increasing* the zero-inflation probability. This might capture non-precipitating cumulus buildup typical of dry, fair-weather afternoons.
+-   `cloud_development` ($\beta = 0.11$): Surprisingly, positive cloud development (more clouds at 3pm than 9am) has a positive coefficient here, slightly *increasing* the hurdle probability (probability of a dry day). This might capture non-precipitating cumulus buildup typical of dry, fair-weather afternoons.
 
 ## Historical Context and Persistence
 
@@ -2264,9 +2270,9 @@ m3_history %>%
 
 -   **The "Drizzle" Effect (`humidity_ma7`):** Interestingly, the 7-day humidity average has a *negative* coefficient ($\beta = -0.10$). Once we control for *today's* humidity (which is positive), a persistently humid week might indicate stable, low-intensity stratiform clouds (drizzle) rather than the explosive instability required for heavy convective storms.
 
--   **Drought Effect (`days_since_rain`):** This variable is **not significant** ($p = 0.14$) for intensity. While our dry spell analysis showed it strongly predicts *whether* it rains (Zero-Inflation), it does not appear to influence *how much* it rains once the dry spell breaks.
+-   **Drought Effect (`days_since_rain`):** This variable is **not significant** ($p = 0.14$) for intensity. While our dry spell analysis showed it strongly predicts *whether* it rains (Hurdle component), it does not appear to influence *how much* it rains once the dry spell breaks.
 
-**3. Zero-Inflation Model:**
+**3. Hurdle Model:**
 
 -   The coefficients remain robust and nearly identical to Model 2, reaffirming that `rain_yesterday` ($\beta = -1.42$) is the dominant driver of the state change from "Dry" to "Wet."
 
@@ -2423,7 +2429,7 @@ ctrl <- glmmTMBControl(
   optCtrl = list(maxit = 1000)
 )
 
-# 3. Fit Zero-Inflated Gamma Mixed Model
+# 3. Fit Hurdle Gamma Mixed Model
 # - Random Intercepts: (1 | location) -> Baseline rainfall varies by city
 # - Random Slopes: (humidity + rain_yesterday... | location) -> The *effect* of these drivers varies by city
 m6_mixed <- glmmTMB(
@@ -2462,7 +2468,7 @@ m6_mixed <- glmmTMB(
     day_sin,
   data = re_data,
   control = ctrl,
-  family = ziGamma(link = "log")
+  family = truncated_gamma(link = "log")  # Hurdle model with truncated Gamma
 )
 ```
 
@@ -2529,9 +2535,9 @@ The final stage of our modeling strategy addresses the hierarchical nature of th
 
 -   **The "Rain Corner":** The interaction term `sun_humid_interaction` ($\beta = -0.067$) remains significant, validating the non-linear relationship between energy and moisture across all Australian climates.
 
-**4. Zero-Inflation & Splines:**
+**4. Hurdle Component & Splines:**
 
--   The inclusion of **Natural Splines** (`ns(days_since_rain, df=4)`) in the zero-inflation formula allows the probability of a dry spell ending to vary non-linearly over time. The significance of the second spline term ($p = 0.018$) suggests that the "drying effect" is not a simple linear decay, capturing the complex "kink" observed in our dry spell survival plots.
+-   The inclusion of **Natural Splines** (`ns(days_since_rain, df=4)`) in the hurdle formula allows the probability of a dry spell ending to vary non-linearly over time. The significance of the second spline term ($p = 0.018$) suggests that the "drying effect" is not a simple linear decay, capturing the complex "kink" observed in our dry spell survival plots.
 
 # Model Evaluation
 
@@ -2546,7 +2552,7 @@ The final stage of our modeling strategy addresses the hierarchical nature of th
 re_data <- select_model_features(df_final, keep_location = TRUE) %>%
   scale_data()
 # Generate Probabilities
-# Extract the probability of "Structural Zero" (No Rain) from the Zero-Inflated Model
+# Extract the probability of "Structural Zero" (No Rain) from the Hurdle Model
 prob_no_rain <- predict(m6_mixed, type = "zprob")
 
 # Define Ground Truth (1 = No Rain, 0 = Rain)
@@ -2586,7 +2592,7 @@ accuracy <- sum(diag(conf_matrix)) / sum(conf_matrix)
 cat(sprintf("\nModel Accuracy: %.2f%%\n", accuracy * 100))
 ```
 
-While the Gamma component of our model estimates rainfall *amount*, the Zero-Inflation component acts as a binary classifier answering the fundamental question: *"Will it rain?"*. We evaluated this classification performance using the Receiver Operating Characteristic (ROC) curve and Confusion Matrix.
+While the Gamma component of our model estimates rainfall *amount* conditional on occurrence, the Hurdle component acts as a binary classifier answering the fundamental question: *"Will it rain?"*. We evaluated this classification performance using the Receiver Operating Characteristic (ROC) curve and Confusion Matrix.
 
 **1. Discriminative Power (AUC):** The model achieves an **Area Under the Curve (AUC) of 0.832** .
 
@@ -2784,11 +2790,11 @@ plot(res)
 # Test for Over/Under-Dispersion
 testDispersion(res)
 
-# Test for Zero-Inflation issues
+# Test for Hurdle Calibration
 testZeroInflation(res)
 ```
 
-A complex model is only as good as its residuals. We utilized the **DHARMa** package to perform simulation-based diagnostics, which are superior to standard residual plots for Zero-Inflated GLMMs.
+A complex model is only as good as its residuals. We utilized the **DHARMa** package to perform simulation-based diagnostics, which are superior to standard residual plots for Hurdle GLMMs.
 
 **1. Q-Q Plot (Distributional Fit):** The Q-Q plot demonstrates a near-perfect alignment along the 1:1 diagonal.
 
@@ -2804,13 +2810,13 @@ A complex model is only as good as its residuals. We utilized the **DHARMa** pac
 
 -   **Dispersion Test:** The non-parametric dispersion test yields a p-value of **0.192** .
 
--   **Interpretation:** We fail to reject the null hypothesis of ideal dispersion. This is a major victory for the model, confirming that the `ziGamma` family successfully handled the variance structure without over-dispersion.
+-   **Interpretation:** We fail to reject the null hypothesis of ideal dispersion. This is a major victory for the model, confirming that the `truncated_gamma` family successfully handled the variance structure without over-dispersion.
 
--   **Zero-Inflation Test:** The test compares the observed zeros to the simulated zeros .
+-   **Hurdle Calibration Test:** The test compares the observed zeros to the simulated zeros.
 
 -   **Ratio:** The ratio of observed to simulated zeros is **1.00** ($p = 0.992$).
 
--   **Interpretation:** The model predicts the *exact* correct number of dry days. The Zero-Inflation component is perfectly calibrated.
+-   **Interpretation:** The model predicts the *exact* correct number of dry days. The Hurdle component is perfectly calibrated to the occurrence process.
 
 **Conclusion:** Model 6 passes all critical diagnostic checks. It is robust, well-calibrated, and valid for inference.
 
@@ -2866,7 +2872,7 @@ A critical assumption of Generalized Linear Mixed Models is that residuals are i
 ```{r}
 #| label: ppc-and-metrics
 #| echo: true
-#| fig-cap: "Posterior Predictive Check. The blue line represents the observed distribution of daily rainfall. The gray lines represent 50 simulated datasets generated by the model. The tight overlap confirms that the model correctly captures the heavy skew and zero-inflation of the real climate system."
+#| fig-cap: "Posterior Predictive Check. The blue line represents the observed distribution of daily rainfall. The gray lines represent 50 simulated datasets generated by the model. The tight overlap confirms that the model correctly captures the heavy skew and structural zeros of the real climate system through its hurdle specification."
 #| fig-width: 10
 #| fig-height: 7
 #| message: false
@@ -2954,7 +2960,7 @@ To conclude the validation, we assessed the model's performance in absolute term
 
 -   **The Fit:** The blue line (Reality) sits perfectly nested within the bundle of gray lines (Model Simulations).
 
--   **Zero-Inflation:** The peak at 0mm is captured accurately, confirming the Zero-Inflation component is working.
+-   **Structural Zeros:** The peak at 0mm is captured accurately, confirming the Hurdle component is working properly to model occurrence.
 
 -   **The Tail:** The decay rate (how quickly light rain turns into heavy rain) matches perfectly. A standard Gaussian model would have failed here, likely predicting negative rain or missing the heavy skew.
 
@@ -3026,7 +3032,7 @@ m_tweedie <- glmmTMB(
 
 ```{r}
 #| label: fig-distribution-comparison
-#| fig-cap: "Why Distribution Matters: Comparing Predictive Densities. The Gaussian model (Red) fails catastrophically by predicting negative rainfall (x < 0). The Zero-Inflated Gamma (Blue) and Tweedie (Green) models correctly capture the zero-bound and the long right tail of the actual data (Black Dashed Line)."
+#| fig-cap: "Why Distribution Matters: Comparing Predictive Densities. The Gaussian model (Red) fails catastrophically by predicting negative rainfall (x < 0). The Hurdle Gamma (Blue) and Tweedie (Green) models correctly capture the zero-bound and the long right tail of the actual data (Black Dashed Line)."
 #| fig-width: 10
 #| fig-height: 8
 #| echo: true
@@ -3045,7 +3051,7 @@ check_data %>%
       Model,
       pred_linear = "Linear (Gaussian)",
       pred_tweedie = "Tweedie",
-      pred_zig = "ZI-Gamma (Ours)"
+      pred_zig = "Hurdle Gamma (Ours)"
     )
   ) %>%
   ggplot(aes(x = Prediction, fill = Model)) +
@@ -3069,7 +3075,7 @@ check_data %>%
   theme_minimal()
 ```
 
-Scientific modeling often faces a trade-off between simplicity and accuracy. To justify the complexity of our chosen **Zero-Inflated Gamma (ZI-Gamma)** framework, we benchmarked it against a standard **Gaussian (Linear)** model and a **Tweedie** model.
+Scientific modeling often faces a trade-off between simplicity and accuracy. To justify the complexity of our chosen **Hurdle Gamma** framework, we benchmarked it against a standard **Gaussian (Linear)** model and a **Tweedie** model.
 
 **1. The Failure of Linearity (Gaussian):** The left panel of @fig-distribution-comparison illustrates the catastrophic failure of standard linear regression.
 
@@ -3077,11 +3083,11 @@ Scientific modeling often faces a trade-off between simplicity and accuracy. To 
 
 -   **Poor Tail Fit:** It completely fails to capture the long right tail of extreme storm events, under-predicting flood risks.
 
-**2. Tweedie vs. Zero-Inflated Gamma:** Both the Tweedie (Green) and our ZI-Gamma (Blue) models successfully respect the physical boundary of zero rainfall. They both align closely with the black dashed line (Real Data).
+**2. Tweedie vs. Hurdle Gamma:** Both the Tweedie (Green) and our Hurdle Gamma (Blue) models successfully respect the physical boundary of zero rainfall. They both align closely with the black dashed line (Real Data).
 
--   **Why ZI-Gamma?** While Tweedie is efficient, it uses a single process to model both the *probability* of rain and the *intensity*. Our analysis in (Markov Chains Analysis) proved that the drivers of rain *occurrence* (e.g., `pressure_change`) differ slightly from the drivers of *intensity* (e.g., `wind_vectors`).
+-   **Why Hurdle Gamma?** While Tweedie is efficient, it uses a single process to model both the *probability* of rain and the *intensity*. Our analysis in (Markov Chains Analysis) proved that the drivers of rain *occurrence* (e.g., `pressure_change`) differ slightly from the drivers of *intensity* (e.g., `wind_vectors`).
 
--   **Conclusion:** The **Zero-Inflated Gamma** was the superior choice because it allowed us to model these two distinct meteorological processes separately;using a Logit model for the "Zero" state and a Gamma model for the "Wet" state;resulting in the highly accurate, physically interpretable predictions seen in the final panel.
+-   **Conclusion:** The **Hurdle Gamma** was the superior choice because it allowed us to model these two distinct meteorological processes separately—using a Logit model for the "Dry" state and a truncated Gamma model for the "Wet" state—resulting in highly accurate, physically interpretable predictions. The strict truncation ensures the Gamma component never generates zeros, maintaining clear separation between occurrence and intensity.
 
 # Final Model Selection and Variance Analysis
 
@@ -3297,13 +3303,15 @@ We employed a strict forward-selection strategy, verifying that each additional 
 
 -   **Insight:** Roughly **10% of the explainable variance** in Australian rainfall is purely geographic;attributable to the specific location of the city (e.g., coastal vs. inland) rather than dynamic weather variables.
 
-**Conclusion:** Model 6 (Mixed Effects Zero-Inflated Gamma) is the statistically superior model. It maximizes likelihood, minimizes information loss (AIC/BIC), and captures significant spatial variance that fixed-effects models miss.
+**Conclusion:** Model 6 (Mixed Effects Hurdle Gamma) is the statistically superior model. It maximizes likelihood, minimizes information loss (AIC/BIC), and captures significant spatial variance that fixed-effects models miss. The hurdle specification provides clear separation between occurrence and intensity processes, improving both interpretability and physical validity.
 
 # Conclusion
 
 ## Summary of Findings
 
-This study successfully developed a hierarchical Zero-Inflated Gamma model to predict daily rainfall across Australia. By analyzing over 140,000 observations, we demonstrated that rainfall is driven by a complex interplay of **thermodynamic instability**, **wind vector dynamics**, and **spatial heterogeneity**.
+This study successfully developed a hierarchical Hurdle Gamma model to predict daily rainfall across Australia. By analyzing over 140,000 observations, we demonstrated that rainfall is driven by a complex interplay of **thermodynamic instability**, **wind vector dynamics**, and **spatial heterogeneity**.
+
+The hurdle specification explicitly separates the rainfall process into two components: a logistic model for occurrence (will it rain?) and a truncated Gamma model for intensity conditional on occurrence (how much?). This approach aligns with the physical data-generating process and avoids the conceptual issues of zero-inflated models where the continuous component can also produce zeros.
 
 Our progressive modeling strategy validated four critical physical hypotheses:
 
@@ -3338,4 +3346,4 @@ Based on these metrics, we define the following scope for deployment:
 
 ## Final Recommendation
 
-We recommend the **Mixed Effects Zero-Inflated Gamma Model** as the standard for general meteorological inference. It successfully balances complexity and accuracy, solving the "negative rain" problem inherent in linear models. Future work should focus on integrating **Extreme Value Theory (EVT)** tails to better model the catastrophic outlier events that the current Gamma framework underestimates.
+We recommend the **Mixed Effects Hurdle Gamma Model** as the standard for general meteorological inference. It successfully balances complexity and accuracy, solving the "negative rain" problem inherent in linear models while maintaining strict separation between occurrence and intensity processes. The hurdle specification ensures that the Gamma component is truncated at zero, preventing it from generating zeros and improving model interpretability. Future work should focus on integrating **Extreme Value Theory (EVT)** tails to better model the catastrophic outlier events that the current Gamma framework underestimates.

@@ -3,10 +3,10 @@
 ![R Version](https://img.shields.io/badge/R-4.4.x-blue?logo=R)
 ![Quarto](https://img.shields.io/badge/Quarto-1.5+-blue?logo=quarto)
 ![Statistician](https://img.shields.io/badge/Role-Statistician-orange)
-![Methodology](https://img.shields.io/badge/Method-ZI--Gamma%20GLMM-red)
+![Methodology](https://img.shields.io/badge/Method-Hurdle%20Gamma%20GLMM-red)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-This repository contains a rigorous frequentist analysis of daily rainfall patterns across Australia. Utilizing a **Zero-Inflated Gamma Generalized Linear Mixed Model (ZI-Gamma GLMM)**, this work decomposes the stochastic nature of precipitation into two distinct physical regimes: the Bernoulli process of occurrence and the Gamma process of intensity.
+This repository contains a rigorous frequentist analysis of daily rainfall patterns across Australia. Utilizing a **Hurdle Gamma Generalized Linear Mixed Model (Hurdle Gamma GLMM)**, this work decomposes the stochastic nature of precipitation into two distinct physical regimes: the Bernoulli process of occurrence and the truncated Gamma process of intensity conditional on occurrence.
 
 ## 🔬 **The Statistical Challenge**
 
@@ -18,7 +18,7 @@ This project implements a joint-likelihood framework to address these irregulari
 
 ## 🎯 **Core Objectives**
 
-* **Regime Separation**: Model the "hurdle" of rain occurrence (Logit link) separately from the magnitude of rain (Log link).
+* **Regime Separation**: Model the "hurdle" of rain occurrence (Logit link) separately from the magnitude of rain (Log link) using a truncated Gamma distribution that cannot generate zeros, ensuring strict separation between occurrence and intensity processes.
 * **Spatial Variance Partitioning**: Quantify regional heterogeneity using random intercepts and slopes.
 * **Temporal Persistence**: Account for Markovian dependencies and dry-spell decay using natural splines.
 * **Reproducible Inference**: Provide a fully documented Quarto workflow, from hybrid Random Forest imputation to DHARMa residual diagnostics.
@@ -56,9 +56,10 @@ The response  is treated as a mixture distribution:
 
 ### **Variance Analysis (Nakagawa’s )**
 
-* **Marginal  (Fixed Effects)**: **0.345**
-* **Conditional  (Total Variance)**: **0.441**
-* **Inference**: Geography accounts for ~10% of explainable variance, proving that "global" models mask significant regional physics.
+* **Marginal R² (Fixed Effects)**: **0.345**
+* **Conditional R² (Total Variance)**: **0.441**
+* **Important Note**: These R² values specifically measure the fit of the **intensity model** (truncated Gamma component) conditional on rain occurring. They do not reflect the full two-stage rainfall process. The hurdle component (occurrence) is evaluated separately through classification metrics.
+* **Inference**: Geography accounts for ~10% of explainable variance in rainfall intensity, proving that "global" models mask significant regional physics.
 
 ---
 
@@ -66,8 +67,8 @@ The response  is treated as a mixture distribution:
 
 The final model (M6) was validated using simulation-based residuals (**DHARMa**):
 
-* **Distributional Fit**: KS Test () confirmed the Gamma distribution as the optimal choice for the wet-regime intensity.
-* **Zero-Inflation**: The ratio of observed to simulated zeros was **1.00**, indicating perfect calibration of the Logit component.
+* **Distributional Fit**: KS Test () confirmed the truncated Gamma distribution as the optimal choice for the wet-regime intensity conditional on occurrence.
+* **Hurdle Calibration**: The ratio of observed to simulated zeros was **1.00**, indicating perfect calibration of the Logit hurdle component.
 * **Independence**: Durbin-Watson statistic of **2.04** confirmed that including Markov persistence successfully "bleached" temporal autocorrelation from the residuals.
 
 ---
