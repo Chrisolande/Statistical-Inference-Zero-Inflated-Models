@@ -569,28 +569,27 @@ To identify the primary meteorological drivers of rainfall, we performed a Spear
 #| eval: false
 
 clean_and_impute_weather <- function(df) {
-  # Mode function for categorical data
-  calc_mode <- function(x) {
-    ux <- unique(na.omit(x))
-    if (length(ux) == 0) {
-      return(NA)
-    }
-    ux[which.max(tabulate(match(x, ux)))]
-  }
+  # Configuration
+  MAXGAP <- 5
+  GHOST_THRESHOLD <- 0.90
+  PMM_K <- 5
+  MAXITER <- 4
 
-  # Basic cleaning and temporal feature engineering
+  # Initial cleaning
   df <- df %>%
     clean_names() %>%
     mutate(
       date = as.Date(date),
       month = as.factor(month(date)),
-      day = as.factor(wday(date, label = TRUE))
+      day = as.factor(wday(date, label = TRUE)),
+      day_of_year = yday(date)
     ) %>%
     filter(!is.na(rainfall)) %>%
-    select(-rain_tomorrow) # Remove future leakage variables
+    select(-rain_tomorrow)
 
-  # Flag "Informative Missingness"
-  flagged_df <- df %>%
+  # Create imputation flags
+
+  df_flagged <- df %>%
     mutate(
       sunshine_imp_flagged = ifelse(is.na(sunshine), 1, 0),
       evap_imp_flagged = ifelse(is.na(evaporation), 1, 0),
@@ -598,8 +597,8 @@ clean_and_impute_weather <- function(df) {
       cloud9am_imp_flagged = ifelse(is.na(cloud9am), 1, 0)
     )
 
-  # Temporal Interpolation (LOCF/Linear)
-  # Weather is autocorrelated; interpolate short gaps within specific locations first
+  # Temporal interpolation
+
   interp_vars <- c(
     "min_temp",
     "max_temp",
@@ -611,34 +610,145 @@ clean_and_impute_weather <- function(df) {
     "humidity3pm"
   )
 
-  flagged_df <- flagged_df %>%
+  df_interp <- df_flagged %>%
     group_by(location) %>%
+    arrange(date, .by_group = TRUE) %>%
     mutate(across(
       all_of(interp_vars),
-      ~ na.approx(., maxgap = 5, na.rm = FALSE, rule = 2)
+      ~ na.approx(., maxgap = MAXGAP, na.rm = FALSE, rule = 2)
     )) %>%
     ungroup()
 
-  # Random Forest Imputation (missRanger)
-  # Use Predictive Mean Matching (PMM) to handle remaining complex missing patterns
-  metadata_cols <- flagged_df %>% select(date)
-  imputation_cols <- flagged_df %>% select(-date)
+  # Identify ghost sensors
+
+  ghost_prone_vars <- c("sunshine", "evaporation", "cloud3pm", "cloud9am")
+
+  ghost_pairs <- df_interp %>%
+    select(location, all_of(ghost_prone_vars)) %>%
+    pivot_longer(
+      cols = all_of(ghost_prone_vars),
+      names_to = "variable",
+      values_to = "value"
+    ) %>%
+    group_by(location, variable) %>%
+    summarise(
+      miss_rate = mean(is.na(value)) * 100,
+      .groups = "drop"
+    ) %>%
+    filter(miss_rate > (GHOST_THRESHOLD * 100)) %>%
+    select(location, variable)
+
+  cat(sprintf("  Found %d ghost sensor instances\n\n", nrow(ghost_pairs)))
+
+  # missRanger imputation (first pass for general variables)
+
+  imputation_data <- df_interp %>%
+    mutate(
+      sin_month = sin(2 * pi * as.numeric(month) / 12),
+      cos_month = cos(2 * pi * as.numeric(month) / 12),
+      sin_doy = sin(2 * pi * day_of_year / 365),
+      cos_doy = cos(2 * pi * day_of_year / 365)
+    )
+
+  metadata_cols <- imputation_data %>% select(date)
+  imputation_cols <- imputation_data %>% select(-date)
 
   imputed_data <- missRanger(
-    imputation_cols,
-    pmm.k = 5, # Predictive Mean Matching k-neighbors
-    num.trees = 100, # Robustness
+    data = imputation_cols,
+    pmm.k = PMM_K,
+    num.trees = 100,
     sample.fraction = 0.3,
     min.node.size = 10,
     seed = 123,
     verbose = 1,
-    maxiter = 5
+    maxiter = MAXITER
   )
 
-  imputed_df <- bind_cols(metadata_cols, imputed_data)
-  return(imputed_df)
+  df_imputed <- bind_cols(metadata_cols, imputed_data) %>%
+    select(-starts_with("sin_"), -starts_with("cos_"))
+
+  # Sanitize ghost sensors
+
+  if (nrow(ghost_pairs) > 0) {
+    ghost_map <- split(ghost_pairs$location, ghost_pairs$variable)
+
+    df_imputed <- df_imputed %>%
+      mutate(across(
+        names(ghost_map),
+        ~ replace(., location %in% ghost_map[[cur_column()]], NA)
+      ))
+
+    cat(sprintf("  Reverted %d instances to NA\n\n", nrow(ghost_pairs)))
+  }
+
+  # Targeted MICE with Random Forest for high-missingness variables
+
+  init <- mice(df_imputed, maxit = 0)
+  pred <- init$predictorMatrix
+  meth <- init$method
+  pred[,] <- 0
+
+  # Set method to random forest for target variables
+  meth["sunshine"] <- "rf"
+  meth["evaporation"] <- "rf"
+  meth["cloud9am"] <- "rf"
+  meth["cloud3pm"] <- "rf"
+
+  # Define predictors for each variable
+  sun_predictors <- intersect(
+    colnames(df_imputed),
+    c("cloud9am", "cloud3pm", "max_temp", "humidity3pm", "location", "month")
+  )
+
+  evap_predictors <- intersect(
+    colnames(df_imputed),
+    c(
+      "wind_gust_speed",
+      "max_temp",
+      "humidity3pm",
+      "sunshine",
+      "location",
+      "month"
+    )
+  )
+
+  cloud_predictors <- intersect(
+    colnames(df_imputed),
+    c("humidity9am", "humidity3pm", "pressure9am", "location", "month")
+  )
+
+  if ("sunshine" %in% rownames(pred)) {
+    pred["sunshine", sun_predictors] <- 1
+  }
+  if ("evaporation" %in% rownames(pred)) {
+    pred["evaporation", evap_predictors] <- 1
+  }
+  if ("cloud9am" %in% rownames(pred)) {
+    pred["cloud9am", cloud_predictors] <- 1
+  }
+  if ("cloud3pm" %in% rownames(pred)) {
+    pred["cloud3pm", cloud_predictors] <- 1
+  }
+
+  ignore_cols <- grep("_flagged$|^date$", colnames(pred), value = TRUE)
+  pred[, ignore_cols] <- 0
+
+  imp <- mice(
+    df_imputed,
+    method = meth,
+    predictorMatrix = pred,
+    m = 1,
+    maxit = 5,
+    seed = 123,
+    printFlag = FALSE
+  )
+
+  df_final <- complete(imp)
+
+  return(df_final)
 }
 ```
+
 
 ```{r}
 #| label: clean-and-save-imputed
@@ -3137,9 +3247,11 @@ lrt_results <- tibble(
 ) %>%
   mutate(
     adj_p_value = p.adjust(raw_p, method = "holm"),
-    Significant = ifelse(adj_p_value < 0.001, "***", 
-                        ifelse(adj_p_value < 0.01, "**",
-                              ifelse(adj_p_value < 0.05, "*", "ns"))),
+    Significant = ifelse(
+      adj_p_value < 0.001,
+      "***",
+      ifelse(adj_p_value < 0.01, "**", ifelse(adj_p_value < 0.05, "*", "ns"))
+    ),
     AIC_improvement = c(
       AIC(m0_null) - AIC(m1_moisture),
       AIC(m1_moisture) - AIC(m2_temporal),
