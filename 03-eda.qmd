@@ -325,7 +325,7 @@ Two temporal scales are examined here: the seven-day weekly cycle (which reflect
 
 **Annual cycle.** The monthly distribution tells a markedly different story. June (10.7%) and July (10.3%) record the highest frequency of wet days, consistent with the Southern Hemisphere winter, when frontal weather systems from the Southern Ocean bring prolonged rainfall to southern Australia. The summer months February (6.5%) and December (7.0%) record the lowest frequencies. The cross-tabulation of month by day confirms that this seasonal signal is not an artefact of any particular day of the week: June and July show consistently elevated counts across all seven days (roughly 750–800 events per day), while February counts drop uniformly to approximately 450–480 per day. `Month` is thus a legitimate predictor warranting explicit inclusion in the model specification.
 
-### Day-to-Day Persistence: A Markov Chain Analysis
+### Day-to-Day Persistence: A Markov Chain Analysis {#sec-markov}
 
 ```{r}
 #| label: markov-prep
@@ -1095,7 +1095,7 @@ Post-hoc pairwise comparisons via Dunn's test with Bonferroni correction identif
 
 ---
 
-## Feature Interactions: The "Rain Corner"
+## Feature Interactions: The "Rain Corner" {#sec-bivariate-density}
 
 ```{r}
 #| label: fig-interaction-rain-corner

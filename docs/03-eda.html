@@ -392,7 +392,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./04-features.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Feature Engineering</span></span></a>
   </div>
 </li>
       </ul>
@@ -449,7 +449,7 @@ window.Quarto = {
   <li><a href="#temporal-structure-of-rainfall" id="toc-temporal-structure-of-rainfall" class="nav-link" data-scroll-target="#temporal-structure-of-rainfall"><span class="header-section-number">3.5</span> Temporal Structure of Rainfall</a>
   <ul class="collapse">
   <li><a href="#sec-frequency" id="toc-sec-frequency" class="nav-link" data-scroll-target="#sec-frequency"><span class="header-section-number">3.5.1</span> Weekly and Seasonal Frequency</a></li>
-  <li><a href="#day-to-day-persistence-a-markov-chain-analysis" id="toc-day-to-day-persistence-a-markov-chain-analysis" class="nav-link" data-scroll-target="#day-to-day-persistence-a-markov-chain-analysis"><span class="header-section-number">3.5.2</span> Day-to-Day Persistence: A Markov Chain Analysis</a></li>
+  <li><a href="#sec-markov" id="toc-sec-markov" class="nav-link" data-scroll-target="#sec-markov"><span class="header-section-number">3.5.2</span> Day-to-Day Persistence: A Markov Chain Analysis</a></li>
   <li><a href="#dry-spell-dynamics-and-temporal-decay" id="toc-dry-spell-dynamics-and-temporal-decay" class="nav-link" data-scroll-target="#dry-spell-dynamics-and-temporal-decay"><span class="header-section-number">3.5.3</span> Dry Spell Dynamics and Temporal Decay</a></li>
   </ul></li>
   <li><a href="#atmospheric-pressure-dynamics" id="toc-atmospheric-pressure-dynamics" class="nav-link" data-scroll-target="#atmospheric-pressure-dynamics"><span class="header-section-number">3.6</span> Atmospheric Pressure Dynamics</a></li>
@@ -458,7 +458,7 @@ window.Quarto = {
   <li><a href="#cyclical-patterns" id="toc-cyclical-patterns" class="nav-link" data-scroll-target="#cyclical-patterns"><span class="header-section-number">3.7.1</span> Cyclical Patterns</a></li>
   <li><a href="#statistical-validation" id="toc-statistical-validation" class="nav-link" data-scroll-target="#statistical-validation"><span class="header-section-number">3.7.2</span> Statistical Validation</a></li>
   </ul></li>
-  <li><a href="#feature-interactions-the-rain-corner" id="toc-feature-interactions-the-rain-corner" class="nav-link" data-scroll-target="#feature-interactions-the-rain-corner"><span class="header-section-number">3.8</span> Feature Interactions: The “Rain Corner”</a></li>
+  <li><a href="#sec-bivariate-density" id="toc-sec-bivariate-density" class="nav-link" data-scroll-target="#sec-bivariate-density"><span class="header-section-number">3.8</span> Feature Interactions: The “Rain Corner”</a></li>
   <li><a href="#summary-and-modelling-implications" id="toc-summary-and-modelling-implications" class="nav-link" data-scroll-target="#summary-and-modelling-implications"><span class="header-section-number">3.9</span> Summary and Modelling Implications</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/blob/main/03-eda.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
@@ -1149,7 +1149,7 @@ Figure&nbsp;3.1: Spearman Correlation Matrix of Meteorological Features. Red ind
 <p>The correlation analysis reveals two coherent clusters of meteorological drivers, each with a clear physical interpretation.</p>
 <p><strong>Moisture indicators (positive association).</strong> <code>Humidity3pm</code> (<span class="math inline">\(r = 0.44\)</span>) and cloud cover (<span class="math inline">\(r \approx 0.37\)</span>) show the strongest positive associations with rainfall. High afternoon humidity indicates that moisture has accumulated in the lower atmosphere over the course of the day, creating conditions favourable for precipitation. Cloud cover is both a physical precondition for rain and a consequence of the same atmospheric dynamics that generate it.</p>
 <p><strong>Radiation and evaporation indicators (negative association).</strong> <code>Sunshine</code> (<span class="math inline">\(r = -0.40\)</span>) and <code>evaporation</code> (<span class="math inline">\(r = -0.31\)</span>) exhibit the strongest negative associations. Long sunshine hours are a proxy for clear-sky, high-pressure conditions in which precipitation is unlikely. High evaporation similarly signals warm, dry, low-humidity surface conditions.</p>
-<p><strong>Multicollinearity.</strong> The correlation heatmap (<a href="#fig-correlation-matrix" class="quarto-xref">Figure&nbsp;<span>3.1</span></a>) also reveals substantial redundancy among predictors. The morning and afternoon readings of the same variable are typically highly correlated — <code>pressure9am</code> and <code>pressure3pm</code> share a Spearman correlation of <span class="math inline">\(r = 0.96\)</span>, and the two temperature readings are similarly collinear. Including both members of such pairs in a regression model inflates standard errors and destabilises coefficient estimates, a problem known as multicollinearity. This observation directly motivates VIF-based feature selection in the modelling stage.</p>
+<p><strong>Multicollinearity.</strong> The correlation heatmap (<a href="#fig-correlation-matrix" class="quarto-xref">Figure&nbsp;<span>3.1</span></a>) also reveals substantial redundancy among predictors. The morning and afternoon readings of the same variable are typically highly correlated <code>pressure9am</code> and <code>pressure3pm</code> share a Spearman correlation of <span class="math inline">\(r = 0.96\)</span>, and the two temperature readings are similarly collinear. Including both members of such pairs in a regression model inflates standard errors and destabilises coefficient estimates, a problem known as multicollinearity. This observation directly motivates VIF-based feature selection in the modelling stage.</p>
 <p><strong>Statistical validation.</strong> A formal comparison of the two strongest opposing predictors (humidity and sunshine) using Steiger’s Z-test for dependent correlations yields <span class="math inline">\(z \approx 188.9\)</span>, <span class="math inline">\(p &lt; 2.2 \times 10^{-16}\)</span>. With <span class="math inline">\(N &gt; 140,000\)</span> observations, virtually any non-trivial effect will achieve statistical significance, so the p-value alone is uninformative here. The magnitude of the Z-statistic, however, confirms that the differential predictive strength of these two variables is not a sampling artefact. Humidity and sunshine represent genuinely distinct physical forces operating in opposing directions on the probability of precipitation.</p>
 <hr>
 </section>
@@ -1490,8 +1490,8 @@ Figure&nbsp;3.1: Spearman Correlation Matrix of Meteorological Features. Red ind
 <p><strong>Weekly cycle.</strong> The distribution of wet days across the days of the week is approximately uniform, ranging from 13.8% on weekends to 14.7% on Tuesdays. This near-uniformity is physically expected: the atmospheric processes that produce precipitation operate independently of the human social calendar. The slight variation observed is consistent with random sampling noise rather than a systematic signal. This suggests that <code>Day</code> carries little predictive information and, at best, warrants treatment as a minor control variable rather than a substantive predictor.</p>
 <p><strong>Annual cycle.</strong> The monthly distribution tells a markedly different story. June (10.7%) and July (10.3%) record the highest frequency of wet days, consistent with the Southern Hemisphere winter, when frontal weather systems from the Southern Ocean bring prolonged rainfall to southern Australia. The summer months February (6.5%) and December (7.0%) record the lowest frequencies. The cross-tabulation of month by day confirms that this seasonal signal is not an artefact of any particular day of the week: June and July show consistently elevated counts across all seven days (roughly 750–800 events per day), while February counts drop uniformly to approximately 450–480 per day. <code>Month</code> is thus a legitimate predictor warranting explicit inclusion in the model specification.</p>
 </section>
-<section id="day-to-day-persistence-a-markov-chain-analysis" class="level3" data-number="3.5.2">
-<h3 data-number="3.5.2" class="anchored" data-anchor-id="day-to-day-persistence-a-markov-chain-analysis"><span class="header-section-number">3.5.2</span> Day-to-Day Persistence: A Markov Chain Analysis</h3>
+<section id="sec-markov" class="level3" data-number="3.5.2">
+<h3 data-number="3.5.2" class="anchored" data-anchor-id="sec-markov"><span class="header-section-number">3.5.2</span> Day-to-Day Persistence: A Markov Chain Analysis</h3>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -2522,13 +2522,13 @@ Figure&nbsp;3.9: Mean Seasonal Rainfall with Statistical Groupings. Shared lette
 </div>
 </div>
 <p>To move beyond visual inspection, we apply the Kruskal-Wallis test the non-parametric counterpart to one-way ANOVA, appropriate here because the rainfall distribution is far from normal. The null hypothesis is that the four seasons are drawn from the same underlying distribution of rainfall intensity.</p>
-<p>The test yields <span class="math inline">\(\chi^2 = 230\)</span>, <span class="math inline">\(p &lt; 0.001\)</span>, strongly rejecting the null. The epsilon-squared effect size (<span class="math inline">\(\eta^2 \approx 0.004\)</span>), however, is classified as small. This warrants careful interpretation: the seasonal signal is real and not a sampling artefact, but season alone accounts for only a minor fraction of the total variance in rainfall intensity. Location, pressure regime, and other meteorological covariates contribute substantially to the remaining variance — an observation that reinforces the necessity of a multivariate modelling approach.</p>
+<p>The test yields <span class="math inline">\(\chi^2 = 230\)</span>, <span class="math inline">\(p &lt; 0.001\)</span>, strongly rejecting the null. The epsilon-squared effect size (<span class="math inline">\(\eta^2 \approx 0.004\)</span>), however, is classified as small. This warrants careful interpretation: the seasonal signal is real and not a sampling artefact, but season alone accounts for only a minor fraction of the total variance in rainfall intensity. Location, pressure regime, and other meteorological covariates contribute substantially to the remaining variance, an observation that reinforces the necessity of a multivariate modelling approach.</p>
 <p>Post-hoc pairwise comparisons via Dunn’s test with Bonferroni correction identify three distinct statistical groups (<a href="#fig-seasonal-stat-groups" class="quarto-xref">Figure&nbsp;<span>3.9</span></a>). Summer stands alone as the most intense season (<span class="math inline">\(\bar{x} = 9.1\)</span> mm, significantly different from all others, <span class="math inline">\(p &lt; 0.001\)</span>). Autumn and Spring are statistically indistinguishable from each other (<span class="math inline">\(p = 1.0\)</span>), forming a middle group of transitional intensity. Winter registers the lowest mean intensity (<span class="math inline">\(\bar{x} = 5.5\)</span> mm) and, while visually similar to Spring, is statistically distinct from it (<span class="math inline">\(p_{\text{adj}} = 0.026\)</span>).</p>
 <hr>
 </section>
 </section>
-<section id="feature-interactions-the-rain-corner" class="level2" data-number="3.8">
-<h2 data-number="3.8" class="anchored" data-anchor-id="feature-interactions-the-rain-corner"><span class="header-section-number">3.8</span> Feature Interactions: The “Rain Corner”</h2>
+<section id="sec-bivariate-density" class="level2" data-number="3.8">
+<h2 data-number="3.8" class="anchored" data-anchor-id="sec-bivariate-density"><span class="header-section-number">3.8</span> Feature Interactions: The “Rain Corner”</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -3074,8 +3074,8 @@ Figure&nbsp;3.10: Bivariate Density of Humidity vs.&nbsp;Sunshine, faceted by Ra
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./04-features.html" class="pagination-link" aria-label="Signal Extraction via Moving Averages">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Signal Extraction via Moving Averages</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./04-features.html" class="pagination-link" aria-label="Feature Engineering">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Feature Engineering</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
@@ -3349,7 +3349,7 @@ Figure&nbsp;3.10: Bivariate Density of Humidity vs.&nbsp;Sunshine, faceted by Ra
 <span id="cb34-280"><a href="#cb34-280"></a></span>
 <span id="cb34-281"><a href="#cb34-281"></a>**Radiation and evaporation indicators (negative association).** <span class="in">`Sunshine`</span> ($r = -0.40$) and <span class="in">`evaporation`</span> ($r = -0.31$) exhibit the strongest negative associations. Long sunshine hours are a proxy for clear-sky, high-pressure conditions in which precipitation is unlikely. High evaporation similarly signals warm, dry, low-humidity surface conditions.</span>
 <span id="cb34-282"><a href="#cb34-282"></a></span>
-<span id="cb34-283"><a href="#cb34-283"></a>**Multicollinearity.** The correlation heatmap (@fig-correlation-matrix) also reveals substantial redundancy among predictors. The morning and afternoon readings of the same variable are typically highly correlated — <span class="in">`pressure9am`</span> and <span class="in">`pressure3pm`</span> share a Spearman correlation of $r = 0.96$, and the two temperature readings are similarly collinear. Including both members of such pairs in a regression model inflates standard errors and destabilises coefficient estimates, a problem known as multicollinearity. This observation directly motivates VIF-based feature selection in the modelling stage.</span>
+<span id="cb34-283"><a href="#cb34-283"></a>**Multicollinearity.** The correlation heatmap (@fig-correlation-matrix) also reveals substantial redundancy among predictors. The morning and afternoon readings of the same variable are typically highly correlated <span class="in">`pressure9am`</span> and <span class="in">`pressure3pm`</span> share a Spearman correlation of $r = 0.96$, and the two temperature readings are similarly collinear. Including both members of such pairs in a regression model inflates standard errors and destabilises coefficient estimates, a problem known as multicollinearity. This observation directly motivates VIF-based feature selection in the modelling stage.</span>
 <span id="cb34-284"><a href="#cb34-284"></a></span>
 <span id="cb34-285"><a href="#cb34-285"></a>**Statistical validation.** A formal comparison of the two strongest opposing predictors (humidity and sunshine) using Steiger's Z-test for dependent correlations yields $z \approx 188.9$, $p &lt; 2.2 \times 10^{-16}$. With $N &gt; 140,000$ observations, virtually any non-trivial effect will achieve statistical significance, so the p-value alone is uninformative here. The magnitude of the Z-statistic, however, confirms that the differential predictive strength of these two variables is not a sampling artefact. Humidity and sunshine represent genuinely distinct physical forces operating in opposing directions on the probability of precipitation.</span>
 <span id="cb34-286"><a href="#cb34-286"></a></span>
@@ -3405,7 +3405,7 @@ Figure&nbsp;3.10: Bivariate Density of Humidity vs.&nbsp;Sunshine, faceted by Ra
 <span id="cb34-338"><a href="#cb34-338"></a></span>
 <span id="cb34-339"><a href="#cb34-339"></a>**Annual cycle.** The monthly distribution tells a markedly different story. June (10.7%) and July (10.3%) record the highest frequency of wet days, consistent with the Southern Hemisphere winter, when frontal weather systems from the Southern Ocean bring prolonged rainfall to southern Australia. The summer months February (6.5%) and December (7.0%) record the lowest frequencies. The cross-tabulation of month by day confirms that this seasonal signal is not an artefact of any particular day of the week: June and July show consistently elevated counts across all seven days (roughly 750–800 events per day), while February counts drop uniformly to approximately 450–480 per day. <span class="in">`Month`</span> is thus a legitimate predictor warranting explicit inclusion in the model specification.</span>
 <span id="cb34-340"><a href="#cb34-340"></a></span>
-<span id="cb34-341"><a href="#cb34-341"></a><span class="fu">### Day-to-Day Persistence: A Markov Chain Analysis</span></span>
+<span id="cb34-341"><a href="#cb34-341"></a><span class="fu">### Day-to-Day Persistence: A Markov Chain Analysis {#sec-markov}</span></span>
 <span id="cb34-342"><a href="#cb34-342"></a></span>
 <span id="cb34-345"><a href="#cb34-345"></a><span class="in">```{r}</span></span>
 <span id="cb34-346"><a href="#cb34-346"></a><span class="co">#| label: markov-prep</span></span>
@@ -4169,13 +4169,13 @@ Figure&nbsp;3.10: Bivariate Density of Humidity vs.&nbsp;Sunshine, faceted by Ra
 <span id="cb34-1142"><a href="#cb34-1142"></a></span>
 <span id="cb34-1143"><a href="#cb34-1143"></a>To move beyond visual inspection, we apply the Kruskal-Wallis test the non-parametric counterpart to one-way ANOVA, appropriate here because the rainfall distribution is far from normal. The null hypothesis is that the four seasons are drawn from the same underlying distribution of rainfall intensity.</span>
 <span id="cb34-1144"><a href="#cb34-1144"></a></span>
-<span id="cb34-1145"><a href="#cb34-1145"></a>The test yields $\chi^2 = 230$, $p &lt; 0.001$, strongly rejecting the null. The epsilon-squared effect size ($\eta^2 \approx 0.004$), however, is classified as small. This warrants careful interpretation: the seasonal signal is real and not a sampling artefact, but season alone accounts for only a minor fraction of the total variance in rainfall intensity. Location, pressure regime, and other meteorological covariates contribute substantially to the remaining variance — an observation that reinforces the necessity of a multivariate modelling approach.</span>
+<span id="cb34-1145"><a href="#cb34-1145"></a>The test yields $\chi^2 = 230$, $p &lt; 0.001$, strongly rejecting the null. The epsilon-squared effect size ($\eta^2 \approx 0.004$), however, is classified as small. This warrants careful interpretation: the seasonal signal is real and not a sampling artefact, but season alone accounts for only a minor fraction of the total variance in rainfall intensity. Location, pressure regime, and other meteorological covariates contribute substantially to the remaining variance, an observation that reinforces the necessity of a multivariate modelling approach.</span>
 <span id="cb34-1146"><a href="#cb34-1146"></a></span>
 <span id="cb34-1147"><a href="#cb34-1147"></a>Post-hoc pairwise comparisons via Dunn's test with Bonferroni correction identify three distinct statistical groups (@fig-seasonal-stat-groups). Summer stands alone as the most intense season ($\bar{x} = 9.1$ mm, significantly different from all others, $p &lt; 0.001$). Autumn and Spring are statistically indistinguishable from each other ($p = 1.0$), forming a middle group of transitional intensity. Winter registers the lowest mean intensity ($\bar{x} = 5.5$ mm) and, while visually similar to Spring, is statistically distinct from it ($p_{\text{adj}} = 0.026$).</span>
 <span id="cb34-1148"><a href="#cb34-1148"></a></span>
 <span id="cb34-1149"><a href="#cb34-1149"></a>---</span>
 <span id="cb34-1150"><a href="#cb34-1150"></a></span>
-<span id="cb34-1151"><a href="#cb34-1151"></a><span class="fu">## Feature Interactions: The "Rain Corner"</span></span>
+<span id="cb34-1151"><a href="#cb34-1151"></a><span class="fu">## Feature Interactions: The "Rain Corner" {#sec-bivariate-density}</span></span>
 <span id="cb34-1152"><a href="#cb34-1152"></a></span>
 <span id="cb34-1155"><a href="#cb34-1155"></a><span class="in">```{r}</span></span>
 <span id="cb34-1156"><a href="#cb34-1156"></a><span class="co">#| label: fig-interaction-rain-corner</span></span>
