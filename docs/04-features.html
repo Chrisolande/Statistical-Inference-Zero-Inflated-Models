@@ -74,14 +74,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-234273d1456647dabc34a594ac50e507.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0348920b7671f696dc9078d39bff215e.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-234273d1456647dabc34a594ac50e507.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2b343a76e97438dab7fb4d41b62743f8.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-5f9457399cb503d1c34ffd8fbac5e1f9.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2b343a76e97438dab7fb4d41b62743f8.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-f12a4a8ba9751daca4e771316b711af2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-27bd61dac4ddfacab4795c71a0bdc5ec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-f12a4a8ba9751daca4e771316b711af2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-c2f9db4fb4608acd7c842482413a1489.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-5c2db627418fe4acd8463f8f5893de0e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-c2f9db4fb4608acd7c842482413a1489.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -359,13 +359,13 @@ window.Quarto = {
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
  <span class="menu-text">Data</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02-data-prep.html" class="sidebar-item-text sidebar-link">
@@ -399,13 +399,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
  <span class="menu-text">Modelling</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./05-modeling.html" class="sidebar-item-text sidebar-link">
@@ -494,9 +494,9 @@ window.Quarto = {
 <h2 data-number="4.2" class="anchored" data-anchor-id="signal-extraction-via-moving-averages"><span class="header-section-number">4.2</span> Signal Extraction via Moving Averages</h2>
 <p>Daily meteorological observations are inherently noisy. A single day’s rainfall measurement reflects both the underlying weather regime and a high-frequency stochastic component, the difference between a storm cell passing directly over a station versus five kilometres to its east. Before engineering predictive features from this signal, we must first assess whether smoothing can reduce this noise and, if so, at what cost.</p>
 <p>We compute rolling means over 3-day and 7-day trailing windows for both rainfall and afternoon humidity. Right-alignment is enforced throughout, meaning the average at time <span class="math inline">\(t\)</span> is computed from observations at <span class="math inline">\(t\)</span>, <span class="math inline">\(t-1\)</span>, …, <span class="math inline">\(t-(k-1)\)</span>. This is a necessary precaution against data leakage: any lookahead alignment would contaminate the training signal with future observations.</p>
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>ma_data <span class="ot">&lt;-</span> df_final <span class="sc">%&gt;%</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a>  <span class="fu">group_by</span>(location) <span class="sc">%&gt;%</span></span>
 <span id="cb1-3"><a href="#cb1-3"></a>  <span class="fu">arrange</span>(date) <span class="sc">%&gt;%</span></span>
@@ -511,9 +511,9 @@ window.Quarto = {
 </div>
 <section id="noise-reduction" class="level3" data-number="4.2.1">
 <h3 data-number="4.2.1" class="anchored" data-anchor-id="noise-reduction"><span class="header-section-number">4.2.1</span> Noise Reduction</h3>
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>p1_data <span class="ot">&lt;-</span> ma_data <span class="sc">%&gt;%</span></span>
 <span id="cb2-2"><a href="#cb2-2"></a>  <span class="fu">filter</span>(rainfall <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb2-3"><a href="#cb2-3"></a>  <span class="fu">select</span>(rainfall, rainfall_ma3, rainfall_ma7) <span class="sc">%&gt;%</span></span>
@@ -574,10 +574,10 @@ window.Quarto = {
 <span id="cb2-58"><a href="#cb2-58"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="fig-signal-extraction" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-signal-extraction" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-signal-extraction-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="04-features_files/figure-html/fig-signal-extraction-1.png" class="img-fluid figure-img" width="960">
+<img src="04-features_files/figure-html/fig-signal-extraction-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-signal-extraction-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;4.1: Signal Extraction: Moving Averages Filter High-Frequency Noise. The 7-Day Moving Average (Green) suppresses daily stochastic variance to reveal the central tendency of wet regimes.
@@ -586,9 +586,9 @@ Figure&nbsp;4.1: Signal Extraction: Moving Averages Filter High-Frequency Noise.
 </div>
 </div>
 </div>
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>variance_data <span class="ot">&lt;-</span> ma_data <span class="sc">%&gt;%</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a>  <span class="fu">filter</span>(rainfall <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb3-3"><a href="#cb3-3"></a>  <span class="fu">summarise</span>(</span>
@@ -634,10 +634,10 @@ Figure&nbsp;4.1: Signal Extraction: Moving Averages Filter High-Frequency Noise.
 <span id="cb3-43"><a href="#cb3-43"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="fu">max</span>(variance_data<span class="sc">$</span>sd) <span class="sc">*</span> <span class="fl">1.15</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="fig-variance-reduction" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-variance-reduction" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-variance-reduction-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="04-features_files/figure-html/fig-variance-reduction-1.png" class="img-fluid figure-img" width="768">
+<img src="04-features_files/figure-html/fig-variance-reduction-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-variance-reduction-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;4.2: Variance Reduction by Window Size. Standard deviation falls substantially as the averaging window widens.
@@ -646,9 +646,9 @@ Figure&nbsp;4.2: Variance Reduction by Window Size. Standard deviation falls sub
 </div>
 </div>
 </div>
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>ridge_data <span class="ot">&lt;-</span> ma_data <span class="sc">%&gt;%</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a>  <span class="fu">filter</span>(rainfall <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb4-3"><a href="#cb4-3"></a>  <span class="fu">select</span>(rainfall, rainfall_ma3, rainfall_ma7) <span class="sc">%&gt;%</span></span>
@@ -697,10 +697,10 @@ Figure&nbsp;4.2: Variance Reduction by Window Size. Standard deviation falls sub
 <span id="cb4-46"><a href="#cb4-46"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="fig-ma-ridgeline" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-ma-ridgeline" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-ma-ridgeline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="04-features_files/figure-html/fig-ma-ridgeline-1.png" class="img-fluid figure-img" width="864">
+<img src="04-features_files/figure-html/fig-ma-ridgeline-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ma-ridgeline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;4.3: Distribution Tightening with Moving Averages. Peaks sharpen and tails compress as the averaging window increases.
@@ -714,9 +714,9 @@ Figure&nbsp;4.3: Distribution Tightening with Moving Averages. Peaks sharpen and
 </section>
 <section id="multicollinearity-trade-off" class="level3" data-number="4.2.2">
 <h3 data-number="4.2.2" class="anchored" data-anchor-id="multicollinearity-trade-off"><span class="header-section-number">4.2.2</span> Multicollinearity Trade-off</h3>
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>cor_data <span class="ot">&lt;-</span> ma_data <span class="sc">%&gt;%</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a>  <span class="fu">select</span>(</span>
 <span id="cb5-3"><a href="#cb5-3"></a>    rainfall,</span>
@@ -786,10 +786,10 @@ Figure&nbsp;4.3: Distribution Tightening with Moving Averages. Peaks sharpen and
 <span id="cb5-67"><a href="#cb5-67"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div id="fig-ma-correlation" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-ma-correlation" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-ma-correlation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="04-features_files/figure-html/fig-ma-correlation-1.png" class="img-fluid figure-img" width="768">
+<img src="04-features_files/figure-html/fig-ma-correlation-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ma-correlation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;4.4: Feature Correlations: Raw vs Moving Averages. High correlations between MA features warn of multicollinearity risks for linear model families.
@@ -806,9 +806,9 @@ Figure&nbsp;4.4: Feature Correlations: Raw vs Moving Averages. High correlations
 <section id="feature-engineering-pipeline" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="feature-engineering-pipeline"><span class="header-section-number">4.3</span> Feature Engineering Pipeline</h2>
 <p>The following pipeline implements the complete set of features motivated by the EDA. Each transformation is annotated to its originating empirical finding.</p>
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>compass_lookup <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
 <span id="cb6-2"><a href="#cb6-2"></a>  <span class="st">"N"</span> <span class="ot">=</span> <span class="dv">0</span>,</span>
 <span id="cb6-3"><a href="#cb6-3"></a>  <span class="st">"NNE"</span> <span class="ot">=</span> <span class="fl">22.5</span>,</span>
@@ -918,9 +918,9 @@ Figure&nbsp;4.4: Feature Correlations: Raw vs Moving Averages. High correlations
 </section>
 <section id="multicollinearity-diagnostics" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="multicollinearity-diagnostics"><span class="header-section-number">4.4</span> Multicollinearity Diagnostics</h2>
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">write_csv</span>(df_final, <span class="st">"data/df_engineered.csv"</span>)</span>
 <span id="cb7-2"><a href="#cb7-2"></a></span>
 <span id="cb7-3"><a href="#cb7-3"></a>df_wo_location <span class="ot">&lt;-</span> <span class="fu">select_model_features</span>(df_final, <span class="at">keep_location =</span> <span class="cn">FALSE</span>)</span>
@@ -1156,7 +1156,7 @@ Figure&nbsp;4.4: Feature Correlations: Raw vs Moving Averages. High correlations
 </table>
 </div>
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>df_scaled <span class="ot">&lt;-</span> df_wo_location <span class="sc">%&gt;%</span></span>
 <span id="cb8-2"><a href="#cb8-2"></a>  <span class="fu">scale_data</span>()</span>
 <span id="cb8-3"><a href="#cb8-3"></a></span>

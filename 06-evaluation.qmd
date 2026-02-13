@@ -17,11 +17,12 @@ librarian::shelf(
   tidyverse,
   glmmTMB,
   DHARMa,
-  splines,
   kableExtra,
   pROC,
   here
 )
+
+library(splines)
 
 df_final <- read_csv(here::here("data", "df_engineered.csv"))
 source(here::here("utils.R"))
