@@ -13,11 +13,16 @@ book:
 
   repo-url: https://github.com/chrisolande/Statistical-Inference-Zero-Inflated-Models
   repo-actions: [source, issue]
+    
+  page-navigation: true
+  back-to-top-navigation: true
+  bread-crumbs: true
 
   sidebar:
     style: "docked"
     background: light
     search: true
+    collapse-level: 1
 
   chapters:
     - index.qmd
@@ -40,12 +45,21 @@ execute:
   warning: false
   message: false
   echo: true
+  cache: true
+  freeze: auto
+  daemon: false
+  
+knitr:
+  opts_chunk:
+    comment: "#>"
+    fig.align: "center"
+    out.width: "100%"
 
 format:
   html:
     theme:
-      light: cosmo
-      dark: darkly
+      light: [cosmo, custom.scss]
+      dark: [darkly, custom-dark.scss]
     highlight-style: github
 
     toc: true
@@ -59,9 +73,15 @@ format:
     code-copy: true
     code-line-numbers: true
     code-overflow: wrap
+    code-summary: "Show the code"
+    code-block-bg: true
+    code-block-border-left: "#0d6efd"
 
     fig-align: center
     fig-cap-location: bottom
+    fig-dpi: 300
+    fig-width: 8
+    fig-height: 6
 
     number-sections: true
     number-depth: 3
@@ -70,3 +90,5 @@ format:
     link-external-newwindow: true
 
     page-layout: article
+    
+

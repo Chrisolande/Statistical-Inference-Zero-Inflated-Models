@@ -1,0 +1,109 @@
+/*-- scss:defaults --*/
+
+$body-bg: #1a1a1a;
+$body-color: #e9ecef;
+$primary: #6ea8fe;
+$code-bg: #2d2d2d;
+
+/*-- scss:rules --*/
+
+body {
+    background-color: $body-bg;
+    color: $body-color;
+}
+
+pre.sourceCode {
+    background-color: #2d2d2d;
+    border-left-color: $primary;
+}
+
+// table styling for dark mode
+table {
+    thead {
+        background-color: #2d2d2d;
+
+        th {
+            color: #e9ecef;
+            border-bottom-color: $primary;
+        }
+    }
+
+    tbody {
+        tr {
+            &:hover {
+                background-color: #2d2d2d;
+            }
+
+            &:nth-child(even) {
+                background-color: #252525;
+            }
+
+            &:nth-child(odd) {
+                background-color: #1a1a1a;
+            }
+        }
+
+        td {
+            border-bottom-color: #3d3d3d;
+            color: #e9ecef;
+        }
+    }
+}
+
+// callouts for dark mode
+.callout {
+    &.callout-note {
+        background-color: rgba(13, 202, 240, 0.1);
+    }
+
+    &.callout-warning {
+        background-color: rgba(255, 193, 7, 0.1);
+    }
+
+    &.callout-important {
+        background-color: rgba(220, 53, 69, 0.1);
+    }
+
+    &.callout-tip {
+        background-color: rgba(25, 135, 84, 0.1);
+    }
+}
+
+// code blocks
+code {
+    background-color: #2d2d2d;
+    color: #ff79c6;
+}
+
+// blockquotes
+blockquote {
+    background-color: #2d2d2d;
+    color: #adb5bd;
+    border-left-color: $primary;
+}
+
+// R output
+.cell-output-stdout,
+.cell-output-stderr {
+    background-color: #2d2d2d;
+    border-left-color: #6c757d;
+    color: #e9ecef;
+}
+
+.cell-output-stderr {
+    background-color: rgba(220, 53, 69, 0.15);
+    border-left-color: #dc3545;
+}
+
+// copy button
+.code-copy-button {
+    background-color: transparent;
+    border-color: #495057;
+    color: #adb5bd;
+
+    &:hover {
+        background-color: #2d2d2d;
+        border-color: $primary;
+        color: $primary;
+    }
+}
