@@ -1,6 +1,5 @@
 # Missing Data Analysis Script
 
-# Load required packages
 library(dplyr)
 library(tidyr)
 library(ggplot2)
@@ -8,54 +7,70 @@ library(lubridate)
 library(naniar)
 library(purrr)
 library(glue)
+library(viridis)
 
-# Define high-missingness variables
+df <- readr::read_csv(here::here("data", "weatherAUS.csv")) %>%
+  janitor::clean_names()
+
+# High Missing cols
 high_miss_cols <- c("sunshine", "evaporation", "cloud3pm", "cloud9am")
 
-high_miss <- df %>%
-  select(all_of(high_miss_cols)) %>%
-  colnames()
+# Confirm theyre in the df
+high_miss <- high_miss_cols[high_miss_cols %in% names(df)]
 
 cat("High missingness variables:", paste(high_miss, collapse = ", "), "\n\n")
 
-# Analyze co-missingness patterns
-cat("Analyzing co-missingness patterns...\n\n")
 
-co_missing_stats <- expand_grid(var1 = high_miss, var2 = high_miss) %>%
-  filter(var1 < var2) %>%
-  rowwise() %>%
-  mutate(
-    n_var1_miss = sum(is.na(df[[var1]])),
-    n_both_miss = sum(is.na(df[[var1]]) & is.na(df[[var2]])),
-    pct_co_miss = if_else(n_var1_miss > 0, (n_both_miss / n_var1_miss) * 100, 0)
-  ) %>%
-  ungroup() %>%
-  arrange(desc(pct_co_miss))
+# Analyze Co-missingness Patterns
+cat("Analyzing co-missingness patterns...\n")
 
-# Display missing pattern combinations
-cat("Missing pattern combinations:\n")
-df %>%
+# logical matrix (TRUE = Missing)
+miss_mat <- df %>%
   select(all_of(high_miss)) %>%
-  miss_case_table() %>%
-  print()
+  mutate(across(everything(), is.na)) %>%
+  as.matrix() %>%
+  apply(2, as.integer) # Convert TRUE/FALSE to 1/0
 
+# calculate intersections (Matrix Multiplication)
+
+intersection_matrix <- crossprod(miss_mat)
+
+# get individual missing counts (the diagonal of the matrix)
+total_miss_counts <- diag(intersection_matrix)
+
+# calculate Conditional Probabilities
+# "Given ROW (var1) is missing, what % of the time is COL (var2) missing?"
+
+pct_matrix <- intersection_matrix / total_miss_counts * 100
+
+co_missing_stats <- as.data.frame(as.table(pct_matrix)) %>%
+  rename(var1 = Var1, var2 = Var2, pct_co_miss = Freq) %>%
+  filter(var1 != var2) %>% # Remove self-matches
+  arrange(desc(pct_co_miss))
 
 print(co_missing_stats)
 
-# Print detailed co-missingness summary
-cat("\nCo-missingness Summary:\n")
 co_missing_stats %>%
   mutate(
     msg = glue(
-      "  {var1} | {var2}: {round(pct_co_miss, 1)}% (when {var1} is missing, {var2} is also missing)"
+      "  {var1} -> {var2}: {round(pct_co_miss, 1)}% (When {var1} is missing, {var2} is missing)"
     )
   ) %>%
   pull(msg) %>%
   walk(cat, "\n")
+cat("\n")
 
 
-# Analyze missingness by location
-cat("Analyzing missingness by location")
+# Missing Pattern Combinations
+cat("Missing pattern combinations (Top 10):\n")
+df %>%
+  select(all_of(high_miss)) %>%
+  miss_case_table() %>%
+  head(10) %>%
+  print()
+
+# Analyze Missingness by Location -
+cat("\nAnalyzing missingness by location...\n")
 
 location_summary <- df %>%
   group_by(location) %>%
@@ -69,8 +84,9 @@ location_summary %>%
 
 cat("\n")
 
-# Analyze temporal trends in missingness
-cat("Analyzing temporal trends.")
+
+# Analyze Temporal Trends in Missingness
+cat("Analyzing temporal trends...\n")
 
 temporal_trend <- df %>%
   mutate(month = floor_date(date, "month")) %>%
@@ -88,7 +104,7 @@ p_time <- ggplot(
   facet_wrap(~variable, scales = "free_y", ncol = 1) +
   labs(
     title = "Timeline of Systematic Missingness",
-    subtitle = "Notice the jump in missing data starting around 2008-2009",
+    subtitle = "Notice the structural breaks in data collection",
     y = "Missingness (%)",
     x = "Year"
   ) +
@@ -98,9 +114,13 @@ p_time <- ggplot(
 print(p_time)
 
 
+# Sunshine vs. Rainfall Analysis
 if (all(c("rainfall", "sunshine") %in% names(df))) {
+  cat("\nRunning Sunshine vs Rainfall check...\n")
+
   # Calculate sunshine missingness by rainfall status
   weather_missing_stats <- df %>%
+    filter(!is.na(rainfall)) %>% # Remove rows where rainfall itself is unknown
     mutate(is_rainy = if_else(rainfall > 1, "Rainy (>1mm)", "Dry (≤1mm)")) %>%
     group_by(is_rainy) %>%
     summarise(
