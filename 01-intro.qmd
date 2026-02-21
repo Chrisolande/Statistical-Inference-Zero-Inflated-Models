@@ -62,7 +62,7 @@ chapter_matrix <- tibble(
   ),
   Content = c(
     "Statistical pathology of rainfall data and limitations of standard approaches.",
-    "Three-stage imputation strategy for the 42-48% missing rate in key meteorological variables.",
+    "Two-stage imputation strategy for the 42-48% missing rate in key meteorological variables.",
     "Quantification of zero-inflation, distributional properties, temporal autocorrelation, and feature interactions.",
     "Construction of wind vectors, cyclical time encoding, interaction terms, and temporal lag features.",
     "Progressive construction of the ZIG model from null baseline through spatial mixed effects.",
@@ -89,7 +89,7 @@ chapter_matrix %>%
 
 ## Research Objectives
 
-**Recover missing data without introducing bias.** Instrumentation gaps affect 42-48% of observations for two of the most predictive meteorological variables. We implement a three-stage imputation strategy that uses temporal neighbourhood, multivariate relationships, and domain-specific inference to fill these gaps, preserving both sample size and predictive signal.
+**Recover missing data without introducing bias.** Instrumentation gaps affect 42-48% of observations for two of the most predictive meteorological variables. We implement a two-stage imputation strategy that combines linear temporal interpolation with multivariate Random Forest imputation via `mice`, using physically motivated predictor sets for each variable to fill these gaps while preserving both sample size and predictive signal.
 
 **Represent weather dynamics as continuous physical processes.** Wind direction is circular, the annual cycle is periodic, and the joint effect of humidity and sunshine is non-linear. Standard encodings of these variables discard their structural properties. We develop features that preserve this geometry: orthogonal vector decomposition for wind direction, sine-cosine encoding for seasonality, and a mean-centred multiplicative term for the humidity-sunshine interaction.
 

@@ -33,7 +33,7 @@ This project implements a **Mixed-Effects Zero-Inflated Gamma (ZIG)** model that
 
 ### Data Engineering
 
-**Hybrid imputation for high-dimensional missingness.** The two most predictive meteorological variables, `sunshine` and `evaporation`, are missing in 47.7% and 42.5% of records respectively due to uneven instrument deployment across the station network. Standard listwise deletion would eliminate nearly half the dataset and introduce geographic bias toward well-resourced stations. A multi-stage pipeline combining temporal interpolation with Random Forest Predictive Mean Matching via `missRanger` recovers these observations while preserving the marginal distributions of the imputed variables.
+**Two-stage imputation for high-dimensional missingness.** The two most predictive meteorological variables, `sunshine` and `evaporation`, are missing in 47.7% and 42.5% of records respectively due to uneven instrument deployment across the station network. Standard listwise deletion would eliminate nearly half the dataset and introduce geographic bias toward well-resourced stations. A two-stage pipeline combining linear temporal interpolation with multivariate Random Forest imputation via `mice` recovers these observations while preserving the marginal distributions of the imputed variables. Ghost sensor station-variable pairs, those exceeding 90% missingness across the full observation window, are identified before imputation and carried forward with binary provenance flags rather than populated with extrapolations that have no empirical anchor.
 
 **Circular wind vector decomposition.** Wind direction is a circular variable: a bearing of 359 degrees and a bearing of 1 degree are separated by 2 degrees, not 358. A naive numeric encoding treats them as maximally distant and destroys the directional information. Each compass bearing is resolved into orthogonal North-South ($V$) and East-West ($U$) components via trigonometric projection, converting a discontinuous categorical variable into two continuous physical quantities that a linear model can interpret correctly.
 
@@ -112,7 +112,7 @@ structure_matrix <- tibble(
   ),
   Content = c(
     "Statistical pathology of Australian rainfall and the failure modes of OLS.",
-    "Hybrid imputation strategy for 42-48% missingness in key meteorological variables.",
+    "Two-stage hybrid imputation strategy for 42-48% missingness in key meteorological variables.",
     "Zero-inflation, distributional properties, Markovian persistence, and the Rain Corner.",
     "Wind vectors, cyclical encoding, interaction terms, and temporal lag features.",
     "Progressive ZIG model construction from null baseline through spatial mixed effects.",

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.8.27">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -70,18 +70,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="./index.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2b343a76e97438dab7fb4d41b62743f8.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-5f9457399cb503d1c34ffd8fbac5e1f9.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2b343a76e97438dab7fb4d41b62743f8.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-9eae319670a971b7aedd265dafd44b4f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-e66b50aa4120364bfa72329fe8653b98.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-9eae319670a971b7aedd265dafd44b4f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-c2f9db4fb4608acd7c842482413a1489.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-d3b9742b9ff5b22559c24e86974f6d61.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-c2f9db4fb4608acd7c842482413a1489.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-1f8a39822a5a1e3eccd3264549681dcc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-463e05341c278a50bd9d8b9e5c352418.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-1f8a39822a5a1e3eccd3264549681dcc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -127,7 +128,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -482,7 +483,7 @@ window.Quarto = {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Three Structural Violations in Australian Rainfall Data
+<span class="screen-reader-only">Note</span>Three Structural Violations in Australian Rainfall Data
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -506,7 +507,7 @@ Three Structural Violations in Australian Rainfall Data
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Why Not Tweedie?
+<span class="screen-reader-only">Important</span>Why Not Tweedie?
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -519,7 +520,7 @@ Why Not Tweedie?
 <p>This document is organised as a progressive validation of modelling choices, beginning with data quality and proceeding through feature design, model construction, diagnostic testing, and formal selection. Each chapter is motivated by empirical findings from the preceding one.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<table class="table table-striped table-hover table-condensed caption-top table-sm small" data-quarto-postprocess="true">
+<table class="table table-striped table-hover table-condensed caption-top table-sm small">
 <caption>Project Structure and Content</caption>
 <thead>
 <tr class="header">
@@ -534,7 +535,7 @@ Why Not Tweedie?
 </tr>
 <tr class="even">
 <td style="text-align: left; width: 4cm; font-weight: bold;">Data</td>
-<td style="text-align: left; width: 12cm;">Three-stage imputation strategy for the 42-48% missing rate in key meteorological variables.</td>
+<td style="text-align: left; width: 12cm;">Two-stage imputation strategy for the 42-48% missing rate in key meteorological variables.</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left; width: 4cm; font-weight: bold;">EDA</td>
@@ -567,7 +568,7 @@ Why Not Tweedie?
 </section>
 <section id="research-objectives" class="level2" data-number="1.4">
 <h2 data-number="1.4" class="anchored" data-anchor-id="research-objectives"><span class="header-section-number">1.4</span> Research Objectives</h2>
-<p><strong>Recover missing data without introducing bias.</strong> Instrumentation gaps affect 42-48% of observations for two of the most predictive meteorological variables. We implement a three-stage imputation strategy that uses temporal neighbourhood, multivariate relationships, and domain-specific inference to fill these gaps, preserving both sample size and predictive signal.</p>
+<p><strong>Recover missing data without introducing bias.</strong> Instrumentation gaps affect 42-48% of observations for two of the most predictive meteorological variables. We implement a two-stage imputation strategy that combines linear temporal interpolation with multivariate Random Forest imputation via <code>mice</code>, using physically motivated predictor sets for each variable to fill these gaps while preserving both sample size and predictive signal.</p>
 <p><strong>Represent weather dynamics as continuous physical processes.</strong> Wind direction is circular, the annual cycle is periodic, and the joint effect of humidity and sunshine is non-linear. Standard encodings of these variables discard their structural properties. We develop features that preserve this geometry: orthogonal vector decomposition for wind direction, sine-cosine encoding for seasonality, and a mean-centred multiplicative term for the humidity-sunshine interaction.</p>
 <p><strong>Account for spatial heterogeneity.</strong> The relationship between atmospheric conditions and rainfall is not uniform across a continent as climatologically diverse as Australia. We introduce location-specific random effects that allow baseline rainfall levels and key covariate relationships to vary by station, without requiring a separate model for each location.</p>
 <p><strong>Validate against the data-generating process, not just the mean.</strong> Standard accuracy metrics measure proximity to the observed mean but cannot detect distributional misspecification. We use simulation-based residual diagnostics to verify that the model replicates the full statistical distribution of Australian rainfall, including its zero-inflation rate, tail behaviour, and temporal independence structure.</p>
@@ -642,13 +643,14 @@ Why Not Tweedie?
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
@@ -1060,7 +1062,7 @@ Why Not Tweedie?
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu"># Introduction {#sec-intro}</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu"># Introduction {#sec-intro}</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a></span>
 <span id="cb1-3"><a href="#cb1-3"></a>Rainfall in Australia is a problem of statistical extremes. The continent experiences some of the most pronounced hydrological variability on Earth: years of crippling drought give way to sudden, widespread flooding, driven by large-scale climate oscillations including the El Nino-Southern Oscillation and the Indian Ocean Dipole. For any predictive model, this variability is not background noise to be absorbed but a central structural feature to be represented.</span>
 <span id="cb1-4"><a href="#cb1-4"></a></span>
@@ -1124,7 +1126,7 @@ Why Not Tweedie?
 <span id="cb1-64"><a href="#cb1-64"></a>  ),</span>
 <span id="cb1-65"><a href="#cb1-65"></a>  <span class="at">Content =</span> <span class="fu">c</span>(</span>
 <span id="cb1-66"><a href="#cb1-66"></a>    <span class="st">"Statistical pathology of rainfall data and limitations of standard approaches."</span>,</span>
-<span id="cb1-67"><a href="#cb1-67"></a>    <span class="st">"Three-stage imputation strategy for the 42-48% missing rate in key meteorological variables."</span>,</span>
+<span id="cb1-67"><a href="#cb1-67"></a>    <span class="st">"Two-stage imputation strategy for the 42-48% missing rate in key meteorological variables."</span>,</span>
 <span id="cb1-68"><a href="#cb1-68"></a>    <span class="st">"Quantification of zero-inflation, distributional properties, temporal autocorrelation, and feature interactions."</span>,</span>
 <span id="cb1-69"><a href="#cb1-69"></a>    <span class="st">"Construction of wind vectors, cyclical time encoding, interaction terms, and temporal lag features."</span>,</span>
 <span id="cb1-70"><a href="#cb1-70"></a>    <span class="st">"Progressive construction of the ZIG model from null baseline through spatial mixed effects."</span>,</span>
@@ -1151,14 +1153,14 @@ Why Not Tweedie?
 <span id="cb1-91"><a href="#cb1-91"></a></span>
 <span id="cb1-92"><a href="#cb1-92"></a><span class="fu">## Research Objectives</span></span>
 <span id="cb1-93"><a href="#cb1-93"></a></span>
-<span id="cb1-94"><a href="#cb1-94"></a>**Recover missing data without introducing bias.** Instrumentation gaps affect 42-48% of observations for two of the most predictive meteorological variables. We implement a three-stage imputation strategy that uses temporal neighbourhood, multivariate relationships, and domain-specific inference to fill these gaps, preserving both sample size and predictive signal.</span>
+<span id="cb1-94"><a href="#cb1-94"></a>**Recover missing data without introducing bias.** Instrumentation gaps affect 42-48% of observations for two of the most predictive meteorological variables. We implement a two-stage imputation strategy that combines linear temporal interpolation with multivariate Random Forest imputation via <span class="in">`mice`</span>, using physically motivated predictor sets for each variable to fill these gaps while preserving both sample size and predictive signal.</span>
 <span id="cb1-95"><a href="#cb1-95"></a></span>
 <span id="cb1-96"><a href="#cb1-96"></a>**Represent weather dynamics as continuous physical processes.** Wind direction is circular, the annual cycle is periodic, and the joint effect of humidity and sunshine is non-linear. Standard encodings of these variables discard their structural properties. We develop features that preserve this geometry: orthogonal vector decomposition for wind direction, sine-cosine encoding for seasonality, and a mean-centred multiplicative term for the humidity-sunshine interaction.</span>
 <span id="cb1-97"><a href="#cb1-97"></a></span>
 <span id="cb1-98"><a href="#cb1-98"></a>**Account for spatial heterogeneity.** The relationship between atmospheric conditions and rainfall is not uniform across a continent as climatologically diverse as Australia. We introduce location-specific random effects that allow baseline rainfall levels and key covariate relationships to vary by station, without requiring a separate model for each location.</span>
 <span id="cb1-99"><a href="#cb1-99"></a></span>
 <span id="cb1-100"><a href="#cb1-100"></a>**Validate against the data-generating process, not just the mean.** Standard accuracy metrics measure proximity to the observed mean but cannot detect distributional misspecification. We use simulation-based residual diagnostics to verify that the model replicates the full statistical distribution of Australian rainfall, including its zero-inflation rate, tail behaviour, and temporal independence structure.</span>
-</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
