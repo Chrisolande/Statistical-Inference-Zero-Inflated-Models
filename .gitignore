@@ -7,7 +7,6 @@
 
 # Ignore knitr/RMarkdown caches (These are heavy and machine-specific)
 *_cache/
-*_files/
 
 # Ignore Quarto temporary internal files
 .quarto/
