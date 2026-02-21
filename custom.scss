@@ -61,19 +61,52 @@ h4 {
   font-weight: 600;
 }
 
-// Code blocks with line numbers styling
-pre.sourceCode {
+// Outer scrollable container
+div.sourceCode {
+  overflow-x: auto;
   border-radius: 4px;
-  background-color: #f8f9fa;
-  position: relative;
-  padding: 1rem 1rem 1rem 3.5rem;
   border: 1px solid #e9ecef;
+  margin: 1rem 0;
+}
 
-  // Style line numbers
-  .line-number {
-    color: #adb5bd;
-    user-select: none;
-  }
+// Code blocks
+pre.sourceCode {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  margin: 0;
+  border: none;
+  border-radius: 4px;
+  overflow-x: visible;
+  white-space: pre;
+}
+
+// Line number table layout
+pre.sourceCode table.sourceCode {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: visible;
+}
+
+// Line number cell
+pre.sourceCode td.line-numbers {
+  white-space: nowrap;
+  user-select: none;
+  color: #adb5bd;
+  padding-right: 1.25rem;
+  padding-left: 0.5rem;
+  text-align: right;
+  min-width: 2rem;
+  border-right: 1px solid #e9ecef;
+  vertical-align: top;
+}
+
+// Code content cell
+pre.sourceCode td.source-line {
+  white-space: pre;
+  overflow: visible;
+  padding-left: 1rem;
+  vertical-align: top;
+  width: 100%;
 }
 
 // inline code
