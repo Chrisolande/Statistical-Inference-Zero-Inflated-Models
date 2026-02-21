@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.8.27">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -70,18 +70,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="./02-data-prep.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2b343a76e97438dab7fb4d41b62743f8.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-5f9457399cb503d1c34ffd8fbac5e1f9.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2b343a76e97438dab7fb4d41b62743f8.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-9eae319670a971b7aedd265dafd44b4f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-e66b50aa4120364bfa72329fe8653b98.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-9eae319670a971b7aedd265dafd44b4f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-c2f9db4fb4608acd7c842482413a1489.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-d3b9742b9ff5b22559c24e86974f6d61.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-c2f9db4fb4608acd7c842482413a1489.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-1f8a39822a5a1e3eccd3264549681dcc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-463e05341c278a50bd9d8b9e5c352418.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-1f8a39822a5a1e3eccd3264549681dcc.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -127,7 +128,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -504,15 +505,15 @@ window.Quarto = {
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>total_na <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(df_clean))</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Total missing values:"</span>, total_na))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>total_na <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(df_clean))</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Total missing values:"</span>, total_na))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt; [1] "Total missing values: 314146"</code></pre>
 </div>
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">missing_val</span>(df_clean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">missing_val</span>(df_clean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
@@ -628,7 +629,7 @@ window.Quarto = {
 </table>
 </div>
 </div>
-<p><strong>Resolution.</strong> A three-stage hybrid imputation pipeline was applied in <a href="02-data-prep.html" class="quarto-xref"><span>Chapter 2</span></a>: binary missingness flags, linear temporal interpolation bounded by a five-day cap, and two-pass Random Forest imputation via <code>missRanger</code> and targeted <code>mice</code>. Ghost sensor observations, station-variable pairs with more than 90% missingness across the full window, were reverted to missing after the pipeline rather than filled with unsupported synthetic values. The imputed dataset <code>df_final</code> is used throughout the remainder of this chapter. The raw dataset <code>df_clean</code> is used only in this opening section, where using pre-imputation data avoids circularity between the imputed features and the response distribution.</p>
+<p><strong>Resolution.</strong> A two-stage hybrid imputation pipeline was applied in <a href="02-data-prep.html" class="quarto-xref"><span>Chapter 2</span></a>: linear temporal interpolation bounded by a five-day cap for the eight smoothly-evolving meteorological variables, followed by multivariate Random Forest imputation via <code>mice</code> for the four atmosphere variables (<code>sunshine</code>, <code>evaporation</code>, <code>cloud9am</code>, <code>cloud3pm</code>) and the three wind direction variables (<code>wind_gust_dir</code>, <code>wind_dir9am</code>, <code>wind_dir3pm</code>). Each variable’s predictor set was restricted to physically motivated covariates: cloud cover from humidity and pressure, sunshine from cloud cover and temperature, evaporation from wind speed, temperature and humidity, and wind direction from the corresponding wind speed, pressure, location, and month. Ghost sensor station-variable pairs, those with more than 90% missingness across the full observation window, were identified before the Random Forest stage and carried forward with binary imputation flags (<code>sunshine_imp_flagged</code>, <code>evap_imp_flagged</code>, <code>cloud3pm_imp_flagged</code>, <code>cloud9am_imp_flagged</code>) rather than populated with extrapolations that have no empirical anchor. The imputed dataset <code>df_final</code> is used throughout the remainder of this chapter. The raw dataset <code>df_clean</code> is used only in this opening section, where using pre-imputation data avoids circularity between the imputed features and the response distribution.</p>
 <p><strong>Modelling implication.</strong> The concentration of missingness in <code>sunshine</code> and <code>evaporation</code>, both of which exhibit meaningful correlation with rainfall, as shown in <a href="#sec-correlation" class="quarto-xref"><span>Section 3.4</span></a>, creates a direct trade-off: discarding these variables avoids imputation complexity but sacrifices predictive signal, while listwise deletion would eliminate nearly half the dataset and introduce geographic bias toward well-instrumented stations. The Random Forest imputation strategy in <a href="02-data-prep.html" class="quarto-xref"><span>Chapter 2</span></a> resolves this trade-off by preserving both sample and features.</p>
 <hr>
 </section>
@@ -638,7 +639,7 @@ window.Quarto = {
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>rainfall_stats <span class="ot">&lt;-</span> df_clean <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>rainfall_stats <span class="ot">&lt;-</span> df_clean <span class="sc">%&gt;%</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a>  <span class="fu">summarise</span>(</span>
 <span id="cb4-3"><a href="#cb4-3"></a>    <span class="at">n =</span> <span class="fu">n</span>(),</span>
 <span id="cb4-4"><a href="#cb4-4"></a>    <span class="at">mean =</span> <span class="fu">mean</span>(rainfall),</span>
@@ -670,10 +671,10 @@ window.Quarto = {
 <span id="cb4-30"><a href="#cb4-30"></a>    <span class="at">caption =</span> <span class="st">"Descriptive Statistics: Daily Rainfall (mm)"</span>,</span>
 <span id="cb4-31"><a href="#cb4-31"></a>    <span class="at">align =</span> <span class="st">"lr"</span></span>
 <span id="cb4-32"><a href="#cb4-32"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb4-33"><a href="#cb4-33"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>), <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-33"><a href="#cb4-33"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>), <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<table class="table table-striped table-hover caption-top table-sm small" data-quarto-postprocess="true">
+<table class="table table-striped table-hover caption-top table-sm small">
 <caption>Descriptive Statistics: Daily Rainfall (mm)</caption>
 <thead>
 <tr class="header">
@@ -747,7 +748,7 @@ window.Quarto = {
 </div>
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>rain_check <span class="ot">&lt;-</span> df_clean <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>rain_check <span class="ot">&lt;-</span> df_clean <span class="sc">%&gt;%</span></span>
 <span id="cb5-2"><a href="#cb5-2"></a>  <span class="fu">summarise</span>(</span>
 <span id="cb5-3"><a href="#cb5-3"></a>    <span class="at">total_days =</span> <span class="fu">n</span>(),</span>
 <span id="cb5-4"><a href="#cb5-4"></a>    <span class="at">dry_days =</span> <span class="fu">sum</span>(rainfall <span class="sc">==</span> <span class="dv">0</span>),</span>
@@ -768,10 +769,10 @@ window.Quarto = {
 <span id="cb5-19"><a href="#cb5-19"></a>  <span class="fu">kable_styling</span>(</span>
 <span id="cb5-20"><a href="#cb5-20"></a>    <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"bordered"</span>),</span>
 <span id="cb5-21"><a href="#cb5-21"></a>    <span class="at">full_width =</span> <span class="cn">FALSE</span></span>
-<span id="cb5-22"><a href="#cb5-22"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-22"><a href="#cb5-22"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<table class="table table-striped table-bordered caption-top table-sm small" data-quarto-postprocess="true">
+<table class="table table-striped table-bordered caption-top table-sm small">
 <caption>Prevalence of Zero-Inflation (Dry Days)</caption>
 <thead>
 <tr class="header">
@@ -804,7 +805,7 @@ window.Quarto = {
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>numeric_cols <span class="ot">&lt;-</span> df_clean <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>numeric_cols <span class="ot">&lt;-</span> df_clean <span class="sc">%&gt;%</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">select</span>(<span class="fu">where</span>(is.numeric)) <span class="sc">%&gt;%</span></span>
 <span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">names</span>()</span>
 <span id="cb6-4"><a href="#cb6-4"></a>numeric_cols <span class="ot">&lt;-</span> numeric_cols[numeric_cols <span class="sc">!=</span> <span class="st">"rainfall"</span>]</span>
@@ -832,10 +833,10 @@ window.Quarto = {
 <span id="cb6-26"><a href="#cb6-26"></a>    <span class="at">caption =</span> <span class="st">"Spearman Correlation with Rainfall (Ranked by Strength)"</span>,</span>
 <span id="cb6-27"><a href="#cb6-27"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Predictor"</span>, <span class="st">"Correlation (r)"</span>, <span class="st">"P-Value"</span>, <span class="st">"Strength"</span>)</span>
 <span id="cb6-28"><a href="#cb6-28"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb6-29"><a href="#cb6-29"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>), <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-29"><a href="#cb6-29"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>), <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<table class="table table-striped table-hover caption-top table-sm small" data-quarto-postprocess="true">
+<table class="table table-striped table-hover caption-top table-sm small">
 <caption>Spearman Correlation with Rainfall (Ranked by Strength)</caption>
 <thead>
 <tr class="header">
@@ -943,7 +944,7 @@ window.Quarto = {
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>cor_matrix <span class="ot">&lt;-</span> df_clean <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>cor_matrix <span class="ot">&lt;-</span> df_clean <span class="sc">%&gt;%</span></span>
 <span id="cb7-2"><a href="#cb7-2"></a>  <span class="fu">select</span>(<span class="fu">where</span>(is.numeric)) <span class="sc">%&gt;%</span></span>
 <span id="cb7-3"><a href="#cb7-3"></a>  <span class="fu">cor</span>(<span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>, <span class="at">method =</span> <span class="st">"spearman"</span>)</span>
 <span id="cb7-4"><a href="#cb7-4"></a></span>
@@ -980,7 +981,7 @@ window.Quarto = {
 <span id="cb7-35"><a href="#cb7-35"></a>  <span class="fu">labs</span>(</span>
 <span id="cb7-36"><a href="#cb7-36"></a>    <span class="at">title =</span> <span class="st">"Feature Correlation Matrix"</span>,</span>
 <span id="cb7-37"><a href="#cb7-37"></a>    <span class="at">subtitle =</span> <span class="st">"Strongest predictors: Humidity (positive) and Sunshine (negative)"</span></span>
-<span id="cb7-38"><a href="#cb7-38"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-38"><a href="#cb7-38"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-correlation-matrix" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -998,7 +999,7 @@ Figure&nbsp;3.1: Spearman Correlation Matrix of Meteorological Features. Red ind
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>cor_humidity <span class="ot">&lt;-</span> <span class="fu">cor.test</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>cor_humidity <span class="ot">&lt;-</span> <span class="fu">cor.test</span>(</span>
 <span id="cb8-2"><a href="#cb8-2"></a>  df_clean<span class="sc">$</span>rainfall,</span>
 <span id="cb8-3"><a href="#cb8-3"></a>  df_clean<span class="sc">$</span>humidity3pm,</span>
 <span id="cb8-4"><a href="#cb8-4"></a>  <span class="at">method =</span> <span class="st">"spearman"</span></span>
@@ -1145,7 +1146,7 @@ Figure&nbsp;3.1: Spearman Correlation Matrix of Meteorological Features. Red ind
 <span id="cb8-145"><a href="#cb8-145"></a><span class="co">#&gt; alternative hypothesis: true difference in correlations is not equal to 0</span></span>
 <span id="cb8-146"><a href="#cb8-146"></a><span class="co">#&gt; sample estimates:</span></span>
 <span id="cb8-147"><a href="#cb8-147"></a><span class="co">#&gt;   r.jk.rho   r.jh.rho       r.kh </span></span>
-<span id="cb8-148"><a href="#cb8-148"></a><span class="co">#&gt;  0.4436352 -0.4013063 -0.6206376</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-148"><a href="#cb8-148"></a><span class="co">#&gt;  0.4436352 -0.4013063 -0.6206376</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p><strong>Moisture indicators (positive association).</strong> <code>Humidity3pm</code> (<span class="math inline">\(r = 0.44\)</span>) and cloud cover (<span class="math inline">\(r \approx 0.37\)</span>) show the strongest positive associations. High afternoon humidity indicates moisture has accumulated in the lower atmosphere over the course of the day. Cloud cover is both a physical precondition for rain and a consequence of the same atmospheric dynamics.</p>
@@ -1161,7 +1162,7 @@ Figure&nbsp;3.1: Spearman Correlation Matrix of Meteorological Features. Red ind
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>df_clean <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>df_clean <span class="sc">%&gt;%</span></span>
 <span id="cb9-2"><a href="#cb9-2"></a>  <span class="fu">filter</span>(rainfall <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb9-3"><a href="#cb9-3"></a>  <span class="fu">tabyl</span>(day) <span class="sc">%&gt;%</span></span>
 <span id="cb9-4"><a href="#cb9-4"></a>  <span class="fu">adorn_pct_formatting</span>() <span class="sc">%&gt;%</span></span>
@@ -1170,10 +1171,10 @@ Figure&nbsp;3.1: Spearman Correlation Matrix of Meteorological Features. Red ind
 <span id="cb9-7"><a href="#cb9-7"></a>    <span class="at">caption =</span> <span class="st">"Frequency of Rainfall Days by Day of the Week"</span>,</span>
 <span id="cb9-8"><a href="#cb9-8"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Day"</span>, <span class="st">"Count (n)"</span>, <span class="st">"Percentage"</span>)</span>
 <span id="cb9-9"><a href="#cb9-9"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb9-10"><a href="#cb9-10"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>), <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-10"><a href="#cb9-10"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>), <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<table class="table table-striped table-hover caption-top table-sm small" data-quarto-postprocess="true">
+<table class="table table-striped table-hover caption-top table-sm small">
 <caption>Frequency of Rainfall Days by Day of the Week</caption>
 <thead>
 <tr class="header">
@@ -1223,7 +1224,7 @@ Figure&nbsp;3.1: Spearman Correlation Matrix of Meteorological Features. Red ind
 </div>
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>df_clean <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>df_clean <span class="sc">%&gt;%</span></span>
 <span id="cb10-2"><a href="#cb10-2"></a>  <span class="fu">filter</span>(rainfall <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb10-3"><a href="#cb10-3"></a>  <span class="fu">tabyl</span>(month) <span class="sc">%&gt;%</span></span>
 <span id="cb10-4"><a href="#cb10-4"></a>  <span class="fu">adorn_pct_formatting</span>() <span class="sc">%&gt;%</span></span>
@@ -1232,10 +1233,10 @@ Figure&nbsp;3.1: Spearman Correlation Matrix of Meteorological Features. Red ind
 <span id="cb10-7"><a href="#cb10-7"></a>    <span class="at">caption =</span> <span class="st">"Frequency of Rainfall Days by Month"</span>,</span>
 <span id="cb10-8"><a href="#cb10-8"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Month"</span>, <span class="st">"Count (n)"</span>, <span class="st">"Percentage"</span>)</span>
 <span id="cb10-9"><a href="#cb10-9"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb10-10"><a href="#cb10-10"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>), <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-10"><a href="#cb10-10"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>), <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<table class="table table-striped table-hover caption-top table-sm small" data-quarto-postprocess="true">
+<table class="table table-striped table-hover caption-top table-sm small">
 <caption>Frequency of Rainfall Days by Month</caption>
 <thead>
 <tr class="header">
@@ -1310,7 +1311,7 @@ Figure&nbsp;3.1: Spearman Correlation Matrix of Meteorological Features. Red ind
 </div>
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>df_clean <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>df_clean <span class="sc">%&gt;%</span></span>
 <span id="cb11-2"><a href="#cb11-2"></a>  <span class="fu">filter</span>(rainfall <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb11-3"><a href="#cb11-3"></a>  <span class="fu">tabyl</span>(month, day) <span class="sc">%&gt;%</span></span>
 <span id="cb11-4"><a href="#cb11-4"></a>  <span class="fu">adorn_totals</span>(<span class="fu">c</span>(<span class="st">"row"</span>, <span class="st">"col"</span>)) <span class="sc">%&gt;%</span></span>
@@ -1319,11 +1320,11 @@ Figure&nbsp;3.1: Spearman Correlation Matrix of Meteorological Features. Red ind
 <span id="cb11-7"><a href="#cb11-7"></a>    <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"condensed"</span>),</span>
 <span id="cb11-8"><a href="#cb11-8"></a>    <span class="at">font_size =</span> <span class="dv">11</span></span>
 <span id="cb11-9"><a href="#cb11-9"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb11-10"><a href="#cb11-10"></a>  <span class="fu">scroll_box</span>(<span class="at">width =</span> <span class="st">"100%"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-10"><a href="#cb11-10"></a>  <span class="fu">scroll_box</span>(<span class="at">width =</span> <span class="st">"100%"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
-<table class="table table-striped table-condensed caption-top table-sm small" data-quarto-postprocess="true">
+<table class="table table-striped table-condensed caption-top table-sm small">
 <caption>Cross-tabulation of Rainfall Frequency: Month vs. Day</caption>
 <thead>
 <tr class="header">
@@ -1495,7 +1496,7 @@ Figure&nbsp;3.1: Spearman Correlation Matrix of Meteorological Features. Red ind
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>markov_table <span class="ot">&lt;-</span> df_final <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>markov_table <span class="ot">&lt;-</span> df_final <span class="sc">%&gt;%</span></span>
 <span id="cb12-2"><a href="#cb12-2"></a>  <span class="fu">group_by</span>(location) <span class="sc">%&gt;%</span></span>
 <span id="cb12-3"><a href="#cb12-3"></a>  <span class="fu">arrange</span>(date) <span class="sc">%&gt;%</span></span>
 <span id="cb12-4"><a href="#cb12-4"></a>  <span class="fu">mutate</span>(<span class="at">yesterday_rain =</span> <span class="fu">lag</span>(rain_today)) <span class="sc">%&gt;%</span></span>
@@ -1508,7 +1509,7 @@ Figure&nbsp;3.1: Spearman Correlation Matrix of Meteorological Features. Red ind
 <span id="cb12-11"><a href="#cb12-11"></a>  <span class="fu">column_to_rownames</span>(<span class="st">"yesterday_rain"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb12-12"><a href="#cb12-12"></a>  <span class="fu">as.matrix</span>()</span>
 <span id="cb12-13"><a href="#cb12-13"></a></span>
-<span id="cb12-14"><a href="#cb12-14"></a><span class="fu">print</span>(cont_table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-14"><a href="#cb12-14"></a><span class="fu">print</span>(cont_table)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt;        No   Yes
@@ -1519,7 +1520,7 @@ Figure&nbsp;3.1: Spearman Correlation Matrix of Meteorological Features. Red ind
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>chi_result <span class="ot">&lt;-</span> <span class="fu">chisq_test</span>(<span class="fu">as.table</span>(cont_table))</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>chi_result <span class="ot">&lt;-</span> <span class="fu">chisq_test</span>(<span class="fu">as.table</span>(cont_table))</span>
 <span id="cb14-2"><a href="#cb14-2"></a><span class="fu">print</span>(chi_result)</span>
 <span id="cb14-3"><a href="#cb14-3"></a><span class="co">#&gt; # A tibble: 1 × 6</span></span>
 <span id="cb14-4"><a href="#cb14-4"></a><span class="co">#&gt;        n statistic     p    df method          p.signif</span></span>
@@ -1543,13 +1544,13 @@ Figure&nbsp;3.1: Spearman Correlation Matrix of Meteorological Features. Red ind
 <span id="cb14-22"><a href="#cb14-22"></a>} <span class="cf">else</span> {</span>
 <span id="cb14-23"><a href="#cb14-23"></a>  <span class="fu">cat</span>(<span class="st">"Strong Association</span><span class="sc">\n</span><span class="st">"</span>)</span>
 <span id="cb14-24"><a href="#cb14-24"></a>}</span>
-<span id="cb14-25"><a href="#cb14-25"></a><span class="co">#&gt; Moderate Association</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-25"><a href="#cb14-25"></a><span class="co">#&gt; Moderate Association</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>markov_data <span class="ot">&lt;-</span> df_final <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>markov_data <span class="ot">&lt;-</span> df_final <span class="sc">%&gt;%</span></span>
 <span id="cb15-2"><a href="#cb15-2"></a>  <span class="fu">group_by</span>(location) <span class="sc">%&gt;%</span></span>
 <span id="cb15-3"><a href="#cb15-3"></a>  <span class="fu">arrange</span>(date) <span class="sc">%&gt;%</span></span>
 <span id="cb15-4"><a href="#cb15-4"></a>  <span class="fu">mutate</span>(<span class="at">yesterday_rain =</span> <span class="fu">lag</span>(rain_today)) <span class="sc">%&gt;%</span></span>
@@ -1585,7 +1586,7 @@ Figure&nbsp;3.1: Spearman Correlation Matrix of Meteorological Features. Red ind
 <span id="cb15-34"><a href="#cb15-34"></a>    <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
 <span id="cb15-35"><a href="#cb15-35"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
 <span id="cb15-36"><a href="#cb15-36"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>, <span class="at">face =</span> <span class="st">"bold"</span>)</span>
-<span id="cb15-37"><a href="#cb15-37"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb15-37"><a href="#cb15-37"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-markov-chain" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -1609,7 +1610,7 @@ Figure&nbsp;3.2: Markov Chain Transition Matrix. The asymmetry between dry-to-dr
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>dry_spell_data <span class="ot">&lt;-</span> df_final <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>dry_spell_data <span class="ot">&lt;-</span> df_final <span class="sc">%&gt;%</span></span>
 <span id="cb16-2"><a href="#cb16-2"></a>  <span class="fu">group_by</span>(location) <span class="sc">%&gt;%</span></span>
 <span id="cb16-3"><a href="#cb16-3"></a>  <span class="fu">arrange</span>(date) <span class="sc">%&gt;%</span></span>
 <span id="cb16-4"><a href="#cb16-4"></a>  <span class="fu">mutate</span>(</span>
@@ -1620,13 +1621,13 @@ Figure&nbsp;3.2: Markov Chain Transition Matrix. The asymmetry between dry-to-dr
 <span id="cb16-9"><a href="#cb16-9"></a>  <span class="fu">mutate</span>(<span class="at">days_since_rain =</span> <span class="fu">row_number</span>()) <span class="sc">%&gt;%</span></span>
 <span id="cb16-10"><a href="#cb16-10"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb16-11"><a href="#cb16-11"></a>  <span class="fu">filter</span>(days_since_rain <span class="sc">&lt;=</span> <span class="dv">30</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb16-12"><a href="#cb16-12"></a>  <span class="fu">mutate</span>(<span class="at">rain_binary =</span> <span class="fu">as.numeric</span>(rainfall <span class="sc">&gt;</span> <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb16-12"><a href="#cb16-12"></a>  <span class="fu">mutate</span>(<span class="at">rain_binary =</span> <span class="fu">as.numeric</span>(rainfall <span class="sc">&gt;</span> <span class="dv">0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>logit_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>logit_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
 <span id="cb17-2"><a href="#cb17-2"></a>  rain_binary <span class="sc">~</span> days_since_rain,</span>
 <span id="cb17-3"><a href="#cb17-3"></a>  <span class="at">data =</span> dry_spell_data,</span>
 <span id="cb17-4"><a href="#cb17-4"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>)</span>
@@ -1657,13 +1658,13 @@ Figure&nbsp;3.2: Markov Chain Transition Matrix. The asymmetry between dry-to-dr
 <span id="cb17-29"><a href="#cb17-29"></a>  or_results<span class="sc">$</span>conf.low,</span>
 <span id="cb17-30"><a href="#cb17-30"></a>  or_results<span class="sc">$</span>conf.high</span>
 <span id="cb17-31"><a href="#cb17-31"></a>))</span>
-<span id="cb17-32"><a href="#cb17-32"></a><span class="co">#&gt; 95% CI: [0.831, 0.838]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-32"><a href="#cb17-32"></a><span class="co">#&gt; 95% CI: [0.831, 0.838]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>logit_spline <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>logit_spline <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
 <span id="cb18-2"><a href="#cb18-2"></a>  rain_binary <span class="sc">~</span> splines<span class="sc">::</span><span class="fu">ns</span>(days_since_rain, <span class="at">df =</span> <span class="dv">4</span>),</span>
 <span id="cb18-3"><a href="#cb18-3"></a>  <span class="at">data =</span> dry_spell_data,</span>
 <span id="cb18-4"><a href="#cb18-4"></a>  <span class="at">family =</span> binomial</span>
@@ -1679,13 +1680,13 @@ Figure&nbsp;3.2: Markov Chain Transition Matrix. The asymmetry between dry-to-dr
 <span id="cb18-14"><a href="#cb18-14"></a><span class="co">#&gt; 1    138444     169706                          </span></span>
 <span id="cb18-15"><a href="#cb18-15"></a><span class="co">#&gt; 2    138441     162027  3   7678.7 &lt; 2.2e-16 ***</span></span>
 <span id="cb18-16"><a href="#cb18-16"></a><span class="co">#&gt; ---</span></span>
-<span id="cb18-17"><a href="#cb18-17"></a><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb18-17"><a href="#cb18-17"></a><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>pred_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">days_since_rain =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>pred_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">days_since_rain =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>)</span>
 <span id="cb19-2"><a href="#cb19-2"></a>pred_data<span class="sc">$</span>pred_prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
 <span id="cb19-3"><a href="#cb19-3"></a>  logit_model,</span>
 <span id="cb19-4"><a href="#cb19-4"></a>  <span class="at">newdata =</span> pred_data,</span>
@@ -1752,7 +1753,7 @@ Figure&nbsp;3.2: Markov Chain Transition Matrix. The asymmetry between dry-to-dr
 <span id="cb19-65"><a href="#cb19-65"></a>    ),</span>
 <span id="cb19-66"><a href="#cb19-66"></a>    <span class="at">caption =</span> <span class="st">"Points: Empirical probabilities +/- 95% CI | Line: Logistic model fit"</span></span>
 <span id="cb19-67"><a href="#cb19-67"></a>  ) <span class="sc">+</span></span>
-<span id="cb19-68"><a href="#cb19-68"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb19-68"><a href="#cb19-68"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-dry-spell" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -1768,7 +1769,7 @@ Figure&nbsp;3.3: The drying effect: empirical vs.&nbsp;modelled probability of r
 </div>
 </div>
 <p>A logistic regression of daily rain occurrence on <code>days_since_rain</code> yields <span class="math inline">\(OR = 0.835\)</span> (Wald <span class="math inline">\(\chi^2 \approx 8099\)</span>, <span class="math inline">\(p &lt; 0.001\)</span>): each additional dry day reduces the odds of rainfall by approximately 16.5%. This is consistent with the progressive establishment of stable high-pressure ridges documented in the Markov analysis.</p>
-<p>The linear model is however an approximation. The LRT against a four-knot natural spline is highly significant (<span class="math inline">\(\chi^2 \approx 7678\)</span>, <span class="math inline">\(p &lt; 0.001\)</span>). The empirical pattern (<a href="#fig-dry-spell" class="quarto-xref">Figure&nbsp;<span>3.3</span></a>) shows rain probability falling sharply from approximately 48% on Day 1 to around 18% by Day 10, then plateauing in the 12–16% range through Days 15 to 30. The linear model underestimates the initial steepness and overestimates long-drought decline rates. This “rapid-then-gradual” decay motivates a spline parameterisation of <code>days_since_rain</code> rather than a simple linear term.</p>
+<p>The linear model is however an approximation. The LRT against a four-knot natural spline is highly significant (<span class="math inline">\(\chi^2 \approx 7678\)</span>, <span class="math inline">\(p &lt; 0.001\)</span>). The empirical pattern (<a href="#fig-dry-spell" class="quarto-xref">Figure&nbsp;<span>3.3</span></a>) shows rain probability falling sharply from approximately 48% on Day 1 to around 18% by Day 10, then plateauing in the 12-16% range through Days 15 to 30. The linear model underestimates the initial steepness and overestimates long-drought decline rates. This “rapid-then-gradual” decay motivates a spline parameterisation of <code>days_since_rain</code> rather than a simple linear term.</p>
 <hr>
 </section>
 </section>
@@ -1777,7 +1778,7 @@ Figure&nbsp;3.3: The drying effect: empirical vs.&nbsp;modelled probability of r
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>pressure_data <span class="ot">&lt;-</span> df_final <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>pressure_data <span class="ot">&lt;-</span> df_final <span class="sc">%&gt;%</span></span>
 <span id="cb20-2"><a href="#cb20-2"></a>  <span class="fu">mutate</span>(<span class="at">pressure_change =</span> pressure3pm <span class="sc">-</span> pressure9am) <span class="sc">%&gt;%</span></span>
 <span id="cb20-3"><a href="#cb20-3"></a>  <span class="fu">select</span>(rain_today, pressure9am, pressure3pm, pressure_change) <span class="sc">%&gt;%</span></span>
 <span id="cb20-4"><a href="#cb20-4"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(pressure9am), <span class="sc">!</span><span class="fu">is.na</span>(rain_today))</span>
@@ -1797,7 +1798,7 @@ Figure&nbsp;3.3: The drying effect: empirical vs.&nbsp;modelled probability of r
 <span id="cb20-18"><a href="#cb20-18"></a>    <span class="at">title =</span> <span class="st">"Q-Q Plots: Normality Check for Pressure Variables"</span>,</span>
 <span id="cb20-19"><a href="#cb20-19"></a>    <span class="at">subtitle =</span> <span class="st">"Modest tail deviations acceptable at N &gt; 140,000 (CLT applies)."</span></span>
 <span id="cb20-20"><a href="#cb20-20"></a>  ) <span class="sc">+</span></span>
-<span id="cb20-21"><a href="#cb20-21"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb20-21"><a href="#cb20-21"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -1810,7 +1811,7 @@ Figure&nbsp;3.3: The drying effect: empirical vs.&nbsp;modelled probability of r
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>test_data <span class="ot">&lt;-</span> pressure_data <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>test_data <span class="ot">&lt;-</span> pressure_data <span class="sc">%&gt;%</span></span>
 <span id="cb21-2"><a href="#cb21-2"></a>  <span class="fu">pivot_longer</span>(</span>
 <span id="cb21-3"><a href="#cb21-3"></a>    <span class="at">cols =</span> <span class="fu">c</span>(pressure9am, pressure3pm, pressure_change),</span>
 <span id="cb21-4"><a href="#cb21-4"></a>    <span class="at">names_to =</span> <span class="st">"metric"</span>,</span>
@@ -1838,10 +1839,10 @@ Figure&nbsp;3.3: The drying effect: empirical vs.&nbsp;modelled probability of r
 <span id="cb21-26"><a href="#cb21-26"></a>      <span class="st">"Significance"</span></span>
 <span id="cb21-27"><a href="#cb21-27"></a>    )</span>
 <span id="cb21-28"><a href="#cb21-28"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb21-29"><a href="#cb21-29"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>), <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb21-29"><a href="#cb21-29"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>), <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<table class="table table-striped table-hover caption-top table-sm small" data-quarto-postprocess="true">
+<table class="table table-striped table-hover caption-top table-sm small">
 <caption>Welch Two-Sample t-test Results (Bonferroni-Holm Corrected)</caption>
 <thead>
 <tr class="header">
@@ -1859,8 +1860,8 @@ Figure&nbsp;3.3: The drying effect: empirical vs.&nbsp;modelled probability of r
 <td style="text-align: left;">pressure3pm</td>
 <td style="text-align: left;">No</td>
 <td style="text-align: left;">Yes</td>
-<td style="text-align: right;">42.016</td>
-<td style="text-align: right;">47512.35</td>
+<td style="text-align: right;">35.609</td>
+<td style="text-align: right;">47628.87</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: left;">****</td>
 </tr>
@@ -1868,8 +1869,8 @@ Figure&nbsp;3.3: The drying effect: empirical vs.&nbsp;modelled probability of r
 <td style="text-align: left;">pressure9am</td>
 <td style="text-align: left;">No</td>
 <td style="text-align: left;">Yes</td>
-<td style="text-align: right;">72.192</td>
-<td style="text-align: right;">47290.28</td>
+<td style="text-align: right;">61.508</td>
+<td style="text-align: right;">48218.65</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: left;">****</td>
 </tr>
@@ -1877,8 +1878,8 @@ Figure&nbsp;3.3: The drying effect: empirical vs.&nbsp;modelled probability of r
 <td style="text-align: left;">pressure_change</td>
 <td style="text-align: left;">No</td>
 <td style="text-align: left;">Yes</td>
-<td style="text-align: right;">-105.393</td>
-<td style="text-align: right;">44171.84</td>
+<td style="text-align: right;">-67.100</td>
+<td style="text-align: right;">48927.45</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: left;">****</td>
 </tr>
@@ -1889,7 +1890,7 @@ Figure&nbsp;3.3: The drying effect: empirical vs.&nbsp;modelled probability of r
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>effect_sizes <span class="ot">&lt;-</span> test_data <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>effect_sizes <span class="ot">&lt;-</span> test_data <span class="sc">%&gt;%</span></span>
 <span id="cb22-2"><a href="#cb22-2"></a>  <span class="fu">group_by</span>(metric) <span class="sc">%&gt;%</span></span>
 <span id="cb22-3"><a href="#cb22-3"></a>  <span class="fu">cohens_d</span>(value <span class="sc">~</span> rain_today, <span class="at">var.equal =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb22-4"><a href="#cb22-4"></a>  <span class="fu">mutate</span>(</span>
@@ -1908,10 +1909,10 @@ Figure&nbsp;3.3: The drying effect: empirical vs.&nbsp;modelled probability of r
 <span id="cb22-17"><a href="#cb22-17"></a>    <span class="at">digits =</span> <span class="dv">3</span>,</span>
 <span id="cb22-18"><a href="#cb22-18"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Metric"</span>, <span class="st">"Effect Size (d)"</span>, <span class="st">"Interpretation"</span>)</span>
 <span id="cb22-19"><a href="#cb22-19"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb22-20"><a href="#cb22-20"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>), <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb22-20"><a href="#cb22-20"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>), <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<table class="table table-striped table-hover caption-top table-sm small" data-quarto-postprocess="true">
+<table class="table table-striped table-hover caption-top table-sm small">
 <caption>Cohen's d Effect Size Analysis</caption>
 <thead>
 <tr class="header">
@@ -1923,18 +1924,18 @@ Figure&nbsp;3.3: The drying effect: empirical vs.&nbsp;modelled probability of r
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">pressure3pm</td>
-<td style="text-align: right;">0.275</td>
+<td style="text-align: right;">0.233</td>
 <td style="text-align: left;">Small</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">pressure9am</td>
-<td style="text-align: right;">0.474</td>
+<td style="text-align: right;">0.401</td>
 <td style="text-align: left;">Small</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">pressure_change</td>
-<td style="text-align: right;">-0.711</td>
-<td style="text-align: left;">Medium</td>
+<td style="text-align: right;">-0.435</td>
+<td style="text-align: left;">Small</td>
 </tr>
 </tbody>
 </table>
@@ -1943,7 +1944,7 @@ Figure&nbsp;3.3: The drying effect: empirical vs.&nbsp;modelled probability of r
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>plot_annotations <span class="ot">&lt;-</span> stats_results <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>plot_annotations <span class="ot">&lt;-</span> stats_results <span class="sc">%&gt;%</span></span>
 <span id="cb23-2"><a href="#cb23-2"></a>  <span class="fu">left_join</span>(effect_sizes, <span class="at">by =</span> <span class="st">"metric"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb23-3"><a href="#cb23-3"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb23-4"><a href="#cb23-4"></a>    <span class="at">label_text =</span> <span class="fu">sprintf</span>(</span>
@@ -1982,7 +1983,7 @@ Figure&nbsp;3.3: The drying effect: empirical vs.&nbsp;modelled probability of r
 <span id="cb23-37"><a href="#cb23-37"></a>  <span class="fu">theme</span>(</span>
 <span id="cb23-38"><a href="#cb23-38"></a>    <span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
 <span id="cb23-39"><a href="#cb23-39"></a>    <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">face =</span> <span class="st">"bold"</span>)</span>
-<span id="cb23-40"><a href="#cb23-40"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb23-40"><a href="#cb23-40"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-pressure-violin" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -2000,7 +2001,7 @@ Figure&nbsp;3.4: Violin plots of atmospheric pressure variables by rainfall stat
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>data_wide <span class="ot">&lt;-</span> df_final <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>data_wide <span class="ot">&lt;-</span> df_final <span class="sc">%&gt;%</span></span>
 <span id="cb24-2"><a href="#cb24-2"></a>  <span class="fu">group_by</span>(rain_today) <span class="sc">%&gt;%</span></span>
 <span id="cb24-3"><a href="#cb24-3"></a>  <span class="fu">summarise</span>(</span>
 <span id="cb24-4"><a href="#cb24-4"></a>    <span class="st">`</span><span class="at">9:00 AM</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>(pressure9am, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
@@ -2033,7 +2034,7 @@ Figure&nbsp;3.4: Violin plots of atmospheric pressure variables by rainfall stat
 <span id="cb24-31"><a href="#cb24-31"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">11</span>),</span>
 <span id="cb24-32"><a href="#cb24-32"></a>    <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">12</span>),</span>
 <span id="cb24-33"><a href="#cb24-33"></a>    <span class="at">panel.grid.major.x =</span> <span class="fu">element_blank</span>()</span>
-<span id="cb24-34"><a href="#cb24-34"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb24-34"><a href="#cb24-34"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-pressure-means" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -2049,7 +2050,7 @@ Figure&nbsp;3.5: Mean pressure levels and diurnal drop by rainfall state. The su
 </div>
 </div>
 <p><strong>Normality.</strong> Q-Q plots show modest tail deviations, but with <span class="math inline">\(N &gt; 140,000\)</span> the CLT ensures normally distributed sample means. Welch’s t-test is therefore valid without equal-variance assumptions, and Bonferroni-Holm correction is applied for multiple comparisons.</p>
-<p><strong>Baseline pressure.</strong> Rainy days show mean pressure of 1015 hPa at 9:00 AM versus 1018.5 hPa on dry days. Cohen’s <span class="math inline">\(d \approx 0.28\)</span>–<span class="math inline">\(0.48\)</span> represents a small-to-medium effect, consistent with absolute pressure being necessary but not sufficient for rain.</p>
+<p><strong>Baseline pressure.</strong> Rainy days show mean pressure of 1015 hPa at 9:00 AM versus 1018.5 hPa on dry days. Cohen’s <span class="math inline">\(d \approx 0.28\)</span>-<span class="math inline">\(0.48\)</span> represents a small-to-medium effect, consistent with absolute pressure being necessary but not sufficient for rain.</p>
 <p><strong>Diurnal pressure change.</strong> On dry days, pressure drops 2.7 hPa from morning to afternoon, the standard thermal low from daytime surface heating. On rainy days, this drop is suppressed to 1.3 hPa, because cloud cover reduces insolation. Cohen’s <span class="math inline">\(d = -0.72\)</span> for <code>pressure_change</code> is a medium effect, stronger than either absolute pressure reading individually. The rate of pressure change during the day is the more discriminating feature.</p>
 <hr>
 </section>
@@ -2060,7 +2061,7 @@ Figure&nbsp;3.5: Mean pressure levels and diurnal drop by rainfall state. The su
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>monthly_stats <span class="ot">&lt;-</span> df_final <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>monthly_stats <span class="ot">&lt;-</span> df_final <span class="sc">%&gt;%</span></span>
 <span id="cb25-2"><a href="#cb25-2"></a>  <span class="fu">filter</span>(rainfall <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb25-3"><a href="#cb25-3"></a>  <span class="fu">group_by</span>(month) <span class="sc">%&gt;%</span></span>
 <span id="cb25-4"><a href="#cb25-4"></a>  <span class="fu">summarise</span>(</span>
@@ -2077,13 +2078,13 @@ Figure&nbsp;3.5: Mean pressure levels and diurnal drop by rainfall state. The su
 <span id="cb25-15"><a href="#cb25-15"></a>    <span class="at">month_label =</span> <span class="fu">factor</span>(month.abb[month], <span class="at">levels =</span> <span class="fu">rev</span>(month.abb)),</span>
 <span id="cb25-16"><a href="#cb25-16"></a>    <span class="at">log_rain =</span> <span class="fu">log</span>(rainfall)</span>
 <span id="cb25-17"><a href="#cb25-17"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb25-18"><a href="#cb25-18"></a>  <span class="fu">left_join</span>(monthly_stats, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"month"</span>, <span class="st">"month_label"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb25-18"><a href="#cb25-18"></a>  <span class="fu">left_join</span>(monthly_stats, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"month"</span>, <span class="st">"month_label"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="fu">ggplot</span>(plot_data, <span class="fu">aes</span>(log_rain, month_label, <span class="at">fill =</span> <span class="fu">after_stat</span>(x))) <span class="sc">+</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="fu">ggplot</span>(plot_data, <span class="fu">aes</span>(log_rain, month_label, <span class="at">fill =</span> <span class="fu">after_stat</span>(x))) <span class="sc">+</span></span>
 <span id="cb26-2"><a href="#cb26-2"></a>  <span class="fu">geom_density_ridges_gradient</span>(</span>
 <span id="cb26-3"><a href="#cb26-3"></a>    <span class="at">scale =</span> <span class="fl">2.5</span>,</span>
 <span id="cb26-4"><a href="#cb26-4"></a>    <span class="at">rel_min_height =</span> <span class="fl">0.01</span>,</span>
@@ -2109,7 +2110,7 @@ Figure&nbsp;3.5: Mean pressure levels and diurnal drop by rainfall state. The su
 <span id="cb26-24"><a href="#cb26-24"></a>    <span class="at">x =</span> <span class="st">"Rainfall Amount (mm, log scale)"</span>,</span>
 <span id="cb26-25"><a href="#cb26-25"></a>    <span class="at">y =</span> <span class="cn">NULL</span></span>
 <span id="cb26-26"><a href="#cb26-26"></a>  ) <span class="sc">+</span></span>
-<span id="cb26-27"><a href="#cb26-27"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb26-27"><a href="#cb26-27"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-monthly-dist" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -2127,7 +2128,7 @@ Figure&nbsp;3.6: Ridgeline plot of monthly log-rainfall distributions. Shifting 
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>seasonal_data <span class="ot">&lt;-</span> df_final <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>seasonal_data <span class="ot">&lt;-</span> df_final <span class="sc">%&gt;%</span></span>
 <span id="cb27-2"><a href="#cb27-2"></a>  <span class="fu">filter</span>(rainfall <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb27-3"><a href="#cb27-3"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb27-4"><a href="#cb27-4"></a>    <span class="at">season =</span> <span class="fu">case_when</span>(</span>
@@ -2167,7 +2168,7 @@ Figure&nbsp;3.6: Ridgeline plot of monthly log-rainfall distributions. Shifting 
 <span id="cb27-38"><a href="#cb27-38"></a>    <span class="at">x =</span> <span class="st">"Rainfall Amount (mm, log scale)"</span>,</span>
 <span id="cb27-39"><a href="#cb27-39"></a>    <span class="at">y =</span> <span class="cn">NULL</span></span>
 <span id="cb27-40"><a href="#cb27-40"></a>  ) <span class="sc">+</span></span>
-<span id="cb27-41"><a href="#cb27-41"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb27-41"><a href="#cb27-41"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-seasonal-facet" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -2185,7 +2186,7 @@ Figure&nbsp;3.7: Seasonal rainfall patterns by meteorological season. Summer exh
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>monthly_stats <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>monthly_stats <span class="sc">%&gt;%</span></span>
 <span id="cb28-2"><a href="#cb28-2"></a>  <span class="fu">mutate</span>(<span class="at">month_label =</span> <span class="fu">factor</span>(month.abb[month], <span class="at">levels =</span> month.abb)) <span class="sc">%&gt;%</span></span>
 <span id="cb28-3"><a href="#cb28-3"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(month_label, mean_rain)) <span class="sc">+</span></span>
 <span id="cb28-4"><a href="#cb28-4"></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">fill =</span> mean_rain, <span class="at">alpha =</span> <span class="fl">0.8</span>), <span class="at">width =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
@@ -2208,7 +2209,7 @@ Figure&nbsp;3.7: Seasonal rainfall patterns by meteorological season. Summer exh
 <span id="cb28-21"><a href="#cb28-21"></a>    <span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
 <span id="cb28-22"><a href="#cb28-22"></a>    <span class="at">panel.grid.major.x =</span> <span class="fu">element_blank</span>(),</span>
 <span id="cb28-23"><a href="#cb28-23"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">face =</span> <span class="st">"bold"</span>)</span>
-<span id="cb28-24"><a href="#cb28-24"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb28-24"><a href="#cb28-24"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-mean-rain-bar" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -2233,7 +2234,7 @@ Figure&nbsp;3.8: Average rainfall intensity on non-zero days by month. February 
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a>seasonal_data <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a>seasonal_data <span class="sc">%&gt;%</span></span>
 <span id="cb29-2"><a href="#cb29-2"></a>  <span class="fu">select</span>(season, rainfall) <span class="sc">%&gt;%</span></span>
 <span id="cb29-3"><a href="#cb29-3"></a>  <span class="fu">group_by</span>(season) <span class="sc">%&gt;%</span></span>
 <span id="cb29-4"><a href="#cb29-4"></a>  <span class="fu">get_summary_stats</span>(rainfall, <span class="at">type =</span> <span class="st">"mean_sd"</span>) <span class="sc">%&gt;%</span></span>
@@ -2241,10 +2242,10 @@ Figure&nbsp;3.8: Average rainfall intensity on non-zero days by month. February 
 <span id="cb29-6"><a href="#cb29-6"></a>    <span class="at">caption =</span> <span class="st">"Descriptive Statistics of Rainfall Intensity by Season"</span>,</span>
 <span id="cb29-7"><a href="#cb29-7"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Season"</span>, <span class="st">"Variable"</span>, <span class="st">"N (Events)"</span>, <span class="st">"Mean (mm)"</span>, <span class="st">"SD (mm)"</span>)</span>
 <span id="cb29-8"><a href="#cb29-8"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb29-9"><a href="#cb29-9"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>), <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb29-9"><a href="#cb29-9"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>), <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<table class="table table-striped table-hover caption-top table-sm small" data-quarto-postprocess="true">
+<table class="table table-striped table-hover caption-top table-sm small">
 <caption>Descriptive Statistics of Rainfall Intensity by Season</caption>
 <thead>
 <tr class="header">
@@ -2291,7 +2292,7 @@ Figure&nbsp;3.8: Average rainfall intensity on non-zero days by month. February 
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a>kw_result <span class="ot">&lt;-</span> <span class="fu">kruskal_test</span>(rainfall <span class="sc">~</span> season, <span class="at">data =</span> seasonal_data)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a>kw_result <span class="ot">&lt;-</span> <span class="fu">kruskal_test</span>(rainfall <span class="sc">~</span> season, <span class="at">data =</span> seasonal_data)</span>
 <span id="cb30-2"><a href="#cb30-2"></a>epsilon_sq <span class="ot">&lt;-</span> <span class="fu">kruskal_effsize</span>(rainfall <span class="sc">~</span> season, <span class="at">data =</span> seasonal_data)</span>
 <span id="cb30-3"><a href="#cb30-3"></a></span>
 <span id="cb30-4"><a href="#cb30-4"></a><span class="fu">tibble</span>(</span>
@@ -2314,10 +2315,10 @@ Figure&nbsp;3.8: Average rainfall intensity on non-zero days by month. February 
 <span id="cb30-21"><a href="#cb30-21"></a>  <span class="fu">add_footnote</span>(</span>
 <span id="cb30-22"><a href="#cb30-22"></a>    <span class="fu">c</span>(<span class="st">"Effect size: Epsilon-squared."</span>, <span class="st">"Alpha = 0.05"</span>),</span>
 <span id="cb30-23"><a href="#cb30-23"></a>    <span class="at">notation =</span> <span class="st">"symbol"</span></span>
-<span id="cb30-24"><a href="#cb30-24"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb30-24"><a href="#cb30-24"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<table class="table table-striped table-hover table-condensed caption-top table-sm small" data-quarto-postprocess="true">
+<table class="table table-striped table-hover table-condensed caption-top table-sm small">
 <caption>Statistical Significance of Seasonal Differences (Non-Parametric)</caption>
 <thead>
 <tr class="header">
@@ -2363,7 +2364,7 @@ Figure&nbsp;3.8: Average rainfall intensity on non-zero days by month. February 
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a>dunn_result <span class="ot">&lt;-</span> <span class="fu">dunn_test</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a>dunn_result <span class="ot">&lt;-</span> <span class="fu">dunn_test</span>(</span>
 <span id="cb31-2"><a href="#cb31-2"></a>  rainfall <span class="sc">~</span> season,</span>
 <span id="cb31-3"><a href="#cb31-3"></a>  <span class="at">data =</span> seasonal_data,</span>
 <span id="cb31-4"><a href="#cb31-4"></a>  <span class="at">p.adjust.method =</span> <span class="st">"bonferroni"</span></span>
@@ -2381,10 +2382,10 @@ Figure&nbsp;3.8: Average rainfall intensity on non-zero days by month. February 
 <span id="cb31-16"><a href="#cb31-16"></a>      <span class="st">"Significance"</span></span>
 <span id="cb31-17"><a href="#cb31-17"></a>    )</span>
 <span id="cb31-18"><a href="#cb31-18"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb31-19"><a href="#cb31-19"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>), <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb31-19"><a href="#cb31-19"></a>  <span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>), <span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
-<table class="table table-striped table-hover caption-top table-sm small" data-quarto-postprocess="true">
+<table class="table table-striped table-hover caption-top table-sm small">
 <caption>Dunn's Pairwise Comparison Test (Bonferroni Corrected)</caption>
 <thead>
 <tr class="header">
@@ -2445,7 +2446,7 @@ Figure&nbsp;3.8: Average rainfall intensity on non-zero days by month. February 
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a>p_vals <span class="ot">&lt;-</span> dunn_result<span class="sc">$</span>p.adj</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a>p_vals <span class="ot">&lt;-</span> dunn_result<span class="sc">$</span>p.adj</span>
 <span id="cb32-2"><a href="#cb32-2"></a><span class="fu">names</span>(p_vals) <span class="ot">&lt;-</span> <span class="fu">paste</span>(dunn_result<span class="sc">$</span>group1, dunn_result<span class="sc">$</span>group2, <span class="at">sep =</span> <span class="st">"-"</span>)</span>
 <span id="cb32-3"><a href="#cb32-3"></a>letters_vec <span class="ot">&lt;-</span> <span class="fu">multcompLetters</span>(p_vals)<span class="sc">$</span>Letters</span>
 <span id="cb32-4"><a href="#cb32-4"></a>letters_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">season =</span> <span class="fu">names</span>(letters_vec), <span class="at">Letter =</span> letters_vec)</span>
@@ -2487,7 +2488,7 @@ Figure&nbsp;3.8: Average rainfall intensity on non-zero days by month. February 
 <span id="cb32-40"><a href="#cb32-40"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">16</span>),</span>
 <span id="cb32-41"><a href="#cb32-41"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
 <span id="cb32-42"><a href="#cb32-42"></a>    <span class="at">panel.grid.major.x =</span> <span class="fu">element_blank</span>()</span>
-<span id="cb32-43"><a href="#cb32-43"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb32-43"><a href="#cb32-43"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-seasonal-stat-groups" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -2512,7 +2513,7 @@ Figure&nbsp;3.9: Mean seasonal rainfall with statistical groupings. Shared lette
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a>df_final <span class="sc">%&gt;%</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a>df_final <span class="sc">%&gt;%</span></span>
 <span id="cb33-2"><a href="#cb33-2"></a>  <span class="fu">group_by</span>(location) <span class="sc">%&gt;%</span></span>
 <span id="cb33-3"><a href="#cb33-3"></a>  <span class="fu">arrange</span>(date) <span class="sc">%&gt;%</span></span>
 <span id="cb33-4"><a href="#cb33-4"></a>  <span class="fu">mutate</span>(<span class="at">rain_index_ref =</span> <span class="fu">ifelse</span>(rainfall <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="fu">row_number</span>(), <span class="cn">NA_integer_</span>)) <span class="sc">%&gt;%</span></span>
@@ -2534,7 +2535,7 @@ Figure&nbsp;3.9: Mean seasonal rainfall with statistical groupings. Shared lette
 <span id="cb33-20"><a href="#cb33-20"></a>    <span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
 <span id="cb33-21"><a href="#cb33-21"></a>    <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
 <span id="cb33-22"><a href="#cb33-22"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span>)</span>
-<span id="cb33-23"><a href="#cb33-23"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb33-23"><a href="#cb33-23"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-interaction-rain-corner" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
@@ -2635,13 +2636,14 @@ Figure&nbsp;3.10: Bivariate density of Humidity3pm vs.&nbsp;Sunshine, faceted by
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
@@ -3053,7 +3055,7 @@ Figure&nbsp;3.10: Bivariate density of Humidity3pm vs.&nbsp;Sunshine, faceted by
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb34" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb34-1"><a href="#cb34-1"></a><span class="fu"># Exploratory Data Analysis {#sec-eda}</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb34-1"><a href="#cb34-1"></a><span class="fu"># Exploratory Data Analysis {#sec-eda}</span></span>
 <span id="cb34-2"><a href="#cb34-2"></a><span class="fu">## Temporal and Meteorological Drivers of Australian Rainfall</span></span>
 <span id="cb34-3"><a href="#cb34-3"></a></span>
 <span id="cb34-4"><a href="#cb34-4"></a>---</span>
@@ -3112,7 +3114,7 @@ Figure&nbsp;3.10: Bivariate density of Humidity3pm vs.&nbsp;Sunshine, faceted by
 <span id="cb34-61"><a href="#cb34-61"></a><span class="fu">missing_val</span>(df_clean)</span>
 <span id="cb34-62"><a href="#cb34-62"></a><span class="in">```</span></span>
 <span id="cb34-63"><a href="#cb34-63"></a></span>
-<span id="cb34-64"><a href="#cb34-64"></a>**Resolution.** A three-stage hybrid imputation pipeline was applied in @sec-data: binary missingness flags, linear temporal interpolation bounded by a five-day cap, and two-pass Random Forest imputation via <span class="in">`missRanger`</span> and targeted <span class="in">`mice`</span>. Ghost sensor observations, station-variable pairs with more than 90% missingness across the full window, were reverted to missing after the pipeline rather than filled with unsupported synthetic values. The imputed dataset <span class="in">`df_final`</span> is used throughout the remainder of this chapter. The raw dataset <span class="in">`df_clean`</span> is used only in this opening section, where using pre-imputation data avoids circularity between the imputed features and the response distribution.</span>
+<span id="cb34-64"><a href="#cb34-64"></a>**Resolution.** A two-stage hybrid imputation pipeline was applied in @sec-data: linear temporal interpolation bounded by a five-day cap for the eight smoothly-evolving meteorological variables, followed by multivariate Random Forest imputation via <span class="in">`mice`</span> for the four atmosphere variables (<span class="in">`sunshine`</span>, <span class="in">`evaporation`</span>, <span class="in">`cloud9am`</span>, <span class="in">`cloud3pm`</span>) and the three wind direction variables (<span class="in">`wind_gust_dir`</span>, <span class="in">`wind_dir9am`</span>, <span class="in">`wind_dir3pm`</span>). Each variable's predictor set was restricted to physically motivated covariates: cloud cover from humidity and pressure, sunshine from cloud cover and temperature, evaporation from wind speed, temperature and humidity, and wind direction from the corresponding wind speed, pressure, location, and month. Ghost sensor station-variable pairs, those with more than 90% missingness across the full observation window, were identified before the Random Forest stage and carried forward with binary imputation flags (<span class="in">`sunshine_imp_flagged`</span>, <span class="in">`evap_imp_flagged`</span>, <span class="in">`cloud3pm_imp_flagged`</span>, <span class="in">`cloud9am_imp_flagged`</span>) rather than populated with extrapolations that have no empirical anchor. The imputed dataset <span class="in">`df_final`</span> is used throughout the remainder of this chapter. The raw dataset <span class="in">`df_clean`</span> is used only in this opening section, where using pre-imputation data avoids circularity between the imputed features and the response distribution.</span>
 <span id="cb34-65"><a href="#cb34-65"></a></span>
 <span id="cb34-66"><a href="#cb34-66"></a>**Modelling implication.** The concentration of missingness in <span class="in">`sunshine`</span> and <span class="in">`evaporation`</span>, both of which exhibit meaningful correlation with rainfall, as shown in @sec-correlation, creates a direct trade-off: discarding these variables avoids imputation complexity but sacrifices predictive signal, while listwise deletion would eliminate nearly half the dataset and introduce geographic bias toward well-instrumented stations. The Random Forest imputation strategy in @sec-data resolves this trade-off by preserving both sample and features.</span>
 <span id="cb34-67"><a href="#cb34-67"></a></span>
@@ -3626,7 +3628,7 @@ Figure&nbsp;3.10: Bivariate density of Humidity3pm vs.&nbsp;Sunshine, faceted by
 <span id="cb34-599"><a href="#cb34-599"></a></span>
 <span id="cb34-600"><a href="#cb34-600"></a>A logistic regression of daily rain occurrence on <span class="in">`days_since_rain`</span> yields $OR = 0.835$ (Wald $\chi^2 \approx 8099$, $p &lt; 0.001$): each additional dry day reduces the odds of rainfall by approximately 16.5%. This is consistent with the progressive establishment of stable high-pressure ridges documented in the Markov analysis.</span>
 <span id="cb34-601"><a href="#cb34-601"></a></span>
-<span id="cb34-602"><a href="#cb34-602"></a>The linear model is however an approximation. The LRT against a four-knot natural spline is highly significant ($\chi^2 \approx 7678$, $p &lt; 0.001$). The empirical pattern (@fig-dry-spell) shows rain probability falling sharply from approximately 48% on Day 1 to around 18% by Day 10, then plateauing in the 12–16% range through Days 15 to 30. The linear model underestimates the initial steepness and overestimates long-drought decline rates. This "rapid-then-gradual" decay motivates a spline parameterisation of <span class="in">`days_since_rain`</span> rather than a simple linear term.</span>
+<span id="cb34-602"><a href="#cb34-602"></a>The linear model is however an approximation. The LRT against a four-knot natural spline is highly significant ($\chi^2 \approx 7678$, $p &lt; 0.001$). The empirical pattern (@fig-dry-spell) shows rain probability falling sharply from approximately 48% on Day 1 to around 18% by Day 10, then plateauing in the 12-16% range through Days 15 to 30. The linear model underestimates the initial steepness and overestimates long-drought decline rates. This "rapid-then-gradual" decay motivates a spline parameterisation of <span class="in">`days_since_rain`</span> rather than a simple linear term.</span>
 <span id="cb34-603"><a href="#cb34-603"></a></span>
 <span id="cb34-604"><a href="#cb34-604"></a>---</span>
 <span id="cb34-605"><a href="#cb34-605"></a></span>
@@ -3820,7 +3822,7 @@ Figure&nbsp;3.10: Bivariate density of Humidity3pm vs.&nbsp;Sunshine, faceted by
 <span id="cb34-803"><a href="#cb34-803"></a></span>
 <span id="cb34-804"><a href="#cb34-804"></a>**Normality.** Q-Q plots show modest tail deviations, but with $N &gt; 140,000$ the CLT ensures normally distributed sample means. Welch's t-test is therefore valid without equal-variance assumptions, and Bonferroni-Holm correction is applied for multiple comparisons.</span>
 <span id="cb34-805"><a href="#cb34-805"></a></span>
-<span id="cb34-806"><a href="#cb34-806"></a>**Baseline pressure.** Rainy days show mean pressure of 1015 hPa at 9:00 AM versus 1018.5 hPa on dry days. Cohen's $d \approx 0.28$–$0.48$ represents a small-to-medium effect, consistent with absolute pressure being necessary but not sufficient for rain.</span>
+<span id="cb34-806"><a href="#cb34-806"></a>**Baseline pressure.** Rainy days show mean pressure of 1015 hPa at 9:00 AM versus 1018.5 hPa on dry days. Cohen's $d \approx 0.28$-$0.48$ represents a small-to-medium effect, consistent with absolute pressure being necessary but not sufficient for rain.</span>
 <span id="cb34-807"><a href="#cb34-807"></a></span>
 <span id="cb34-808"><a href="#cb34-808"></a>**Diurnal pressure change.** On dry days, pressure drops 2.7 hPa from morning to afternoon, the standard thermal low from daytime surface heating. On rainy days, this drop is suppressed to 1.3 hPa, because cloud cover reduces insolation. Cohen's $d = -0.72$ for <span class="in">`pressure_change`</span> is a medium effect, stronger than either absolute pressure reading individually. The rate of pressure change during the day is the more discriminating feature.</span>
 <span id="cb34-809"><a href="#cb34-809"></a></span>
@@ -4180,7 +4182,7 @@ Figure&nbsp;3.10: Bivariate density of Humidity3pm vs.&nbsp;Sunshine, faceted by
 <span id="cb34-1181"><a href="#cb34-1181"></a>The **pressure analysis** identifies the diurnal pressure change as the more discriminating pressure-derived feature, with Cohen's $d = 0.72$ separating rainy from dry days more effectively than absolute pressure level.</span>
 <span id="cb34-1182"><a href="#cb34-1182"></a></span>
 <span id="cb34-1183"><a href="#cb34-1183"></a>The **interaction analysis** provides empirical justification for a $\text{Humidity} \times \text{Sunshine}$ interaction term, reflecting the physical reality that precipitation concentrates where high moisture and low solar radiation coincide in the "Rain Corner" of the feature space.</span>
-</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
